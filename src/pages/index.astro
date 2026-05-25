@@ -285,11 +285,11 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
             <div class="field"><input type="text" name="company" placeholder="Company" /></div>
             <div class="field">
               <select name="engagement" style="flex:1; border:0; background:transparent; font-family: var(--font-text); font-size: 18px; color: var(--page-fg); padding: 6px 0; appearance:none;">
-                <option>Engagement &mdash; pick one</option>
-                <option>Consulting &mdash; data / AI strategy</option>
-                <option>Freelance &mdash; software engineering</option>
-                <option>Investing &mdash; pitch deck</option>
-                <option>Something else</option>
+                <option value="">Engagement &mdash; pick one</option>
+                <option value="Consulting — data / AI strategy">Consulting &mdash; data / AI strategy</option>
+                <option value="Freelance — software engineering">Freelance &mdash; software engineering</option>
+                <option value="Investing — pitch deck">Investing &mdash; pitch deck</option>
+                <option value="Something else">Something else</option>
               </select>
             </div>
           </div>
@@ -372,7 +372,7 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
         company ? `Company: ${company}` : null,
         engagement ? `Engagement: ${engagement}` : null,
         "",
-        message || "A sentence or two on the thing we’re trying to ship:",
+        message ? `Message: ${message}` : null,
       ].filter(Boolean).join("\n"));
 
       if (status) status.textContent = "Opening your email client with a pre-filled note.";
