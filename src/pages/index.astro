@@ -5,6 +5,7 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
 <MarketingLayout
 	title="Little Big Things — Tim & Christina Frazer"
 	description="Little Big Things is the consulting, investing and freelance practice of Tim & Christina Frazer — focused work across data, AI engineering and analytics."
+	canonical="https://littlebigthings.co/"
 >
 
 
@@ -277,13 +278,13 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
 
         <form class="contact-form" id="contact-form">
           <div class="row">
-            <div class="field"><input type="text" placeholder="Your name" required /></div>
-            <div class="field"><input type="email" placeholder="Email" required /></div>
+            <div class="field"><input type="text" name="name" placeholder="Your name" required /></div>
+            <div class="field"><input type="email" name="email" placeholder="Email" required /></div>
           </div>
           <div class="row">
-            <div class="field"><input type="text" placeholder="Company" /></div>
+            <div class="field"><input type="text" name="company" placeholder="Company" /></div>
             <div class="field">
-              <select style="flex:1; border:0; background:transparent; font-family: var(--font-text); font-size: 18px; color: var(--page-fg); padding: 6px 0; appearance:none;">
+              <select name="engagement" style="flex:1; border:0; background:transparent; font-family: var(--font-text); font-size: 18px; color: var(--page-fg); padding: 6px 0; appearance:none;">
                 <option>Engagement &mdash; pick one</option>
                 <option>Consulting &mdash; data / AI strategy</option>
                 <option>Freelance &mdash; software engineering</option>
@@ -293,11 +294,11 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
             </div>
           </div>
           <div class="field">
-            <textarea rows="3" placeholder="A sentence or two on the thing you&rsquo;re trying to ship."></textarea>
+            <textarea rows="3" name="message" placeholder="A sentence or two on the thing you&rsquo;re trying to ship."></textarea>
           </div>
           <div class="submit-row">
-            <small>We read every message. No funnel, no auto-reply.</small>
-            <button class="btn btn-primary btn-lg" type="submit">Send <span class="arrow">→</span></button>
+            <small>This opens a pre-filled email to Tim so your note is actually sent.</small>
+            <button class="btn btn-primary btn-lg" type="submit">Email us <span class="arrow">→</span></button>
           </div>
         </form>
       </div>
@@ -355,10 +356,28 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
     const contactForm = document.querySelector<HTMLFormElement>("#contact-form");
     contactForm?.addEventListener("submit", (event) => {
       event.preventDefault();
+      const data = new FormData(contactForm);
+      const name = String(data.get("name") || "").trim();
+      const email = String(data.get("email") || "").trim();
+      const company = String(data.get("company") || "").trim();
+      const engagement = String(data.get("engagement") || "").trim();
+      const message = String(data.get("message") || "").trim();
       const status = contactForm.querySelector<HTMLElement>(".submit-row small");
       const button = contactForm.querySelector<HTMLButtonElement>("button[type='submit']");
-      if (status) status.textContent = "Thanks. We’ll be in touch within two business days.";
+
+      const subject = encodeURIComponent("Little Big Things inquiry");
+      const body = encodeURIComponent([
+        `Name: ${name}`,
+        `Email: ${email}`,
+        company ? `Company: ${company}` : null,
+        engagement ? `Engagement: ${engagement}` : null,
+        "",
+        message || "A sentence or two on the thing we’re trying to ship:",
+      ].filter(Boolean).join("\n"));
+
+      if (status) status.textContent = "Opening your email client with a pre-filled note.";
       if (button) button.disabled = true;
+      window.location.href = `mailto:tim@littlebigthings.co?subject=${subject}&body=${body}`;
     });
   </script>
 </MarketingLayout>

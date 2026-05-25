@@ -1,7 +1,9 @@
 /* ========================================================================
        LITTLE BIG THINGS — page styles
-       Built on the Little Big Humans design system. Three themes (paper / ink /
-       mountain) controlled via [data-theme] on <html> by the Tweaks panel.
+       Ported from design-handoff/Little Big Things.html. Keep that file as a
+       read-only reference and make production changes here to avoid drift.
+       Three themes (paper / ink / mountain) are controlled via [data-theme] on
+       <html>; the production site defaults to paper.
        ======================================================================== */
 
     *, *::before, *::after { box-sizing: border-box; }

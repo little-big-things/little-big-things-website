@@ -7,9 +7,16 @@ import "../styles/lbt-page.css";
 interface Props {
 	title: string;
 	description?: string;
+	canonical?: string;
+	image?: string;
 }
 
-const { title, description } = Astro.props;
+const {
+	title,
+	description,
+	canonical = "https://littlebigthings.co/",
+	image = "https://littlebigthings.co/og-image.png",
+} = Astro.props;
 const pageCtx = createPublicPageContext({
 	Astro,
 	kind: "custom",
@@ -17,9 +24,9 @@ const pageCtx = createPublicPageContext({
 	title,
 	pageTitle: title,
 	description,
-	canonical: "https://littlebigthings.co/",
-	image: "https://littlebigthings.co/og-image.png",
-	seo: { ogImage: "https://littlebigthings.co/og-image.png" },
+	canonical,
+	image,
+	seo: { ogImage: image },
 	siteName: "Little Big Things",
 });
 ---
@@ -32,7 +39,7 @@ const pageCtx = createPublicPageContext({
 		<meta name="theme-color" content="#190ADB" />
 		<title>{title}</title>
 		<meta name="description" content={description} />
-		<link rel="canonical" href="https://littlebigthings.co/" />
+		<link rel="canonical" href={canonical} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="alternate icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
