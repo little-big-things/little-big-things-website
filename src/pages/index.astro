@@ -1,463 +1,364 @@
 ---
-import {
-	getEmDashCollection,
-	getTermsForEntries,
-	getSiteSettings,
-} from "emdash";
-import { Image } from "emdash/ui";
-import Base from "../layouts/Base.astro";
-import PostCard from "../components/PostCard.astro";
-import { getReadingTime } from "../utils/reading-time";
-import { resolveBlogSiteIdentity } from "../utils/site-identity";
-
-// Limit to what we render (1 featured + 6 grid). The DB does the slicing
-// instead of fetching every post and discarding the tail in JS.
-const POSTS_PER_PAGE = 7;
-
-const [{ entries: posts, cacheHint }, settings] = await Promise.all([
-	getEmDashCollection("posts", {
-		orderBy: { published_at: "desc" },
-		limit: POSTS_PER_PAGE + 1, // +1 to detect "view all" need
-	}),
-	getSiteSettings(),
-]);
-const { siteTitle, siteTagline } = resolveBlogSiteIdentity(settings);
-
-if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
-
-// Trim the lookahead post used to detect overflow
-const visiblePosts = posts.slice(0, POSTS_PER_PAGE);
-const hasMorePosts = posts.length > POSTS_PER_PAGE;
-
-// Find the first post with a featured image for the hero
-const featuredPost = visiblePosts.find((p) => p.data.featured_image);
-const featuredIndex = featuredPost ? visiblePosts.indexOf(featuredPost) : -1;
-
-// Get remaining posts (exclude featured if found, limit to 6 for grid)
-const gridPosts = visiblePosts.filter((_, i) => i !== featuredIndex).slice(0, 6);
-
-// Single batched query for tags across the featured post + grid posts.
-// Avoids the N+1 pattern of calling getEntryTerms() per entry.
-// Bylines are already hydrated on entry.data.bylines by getEmDashCollection.
-const tagEntryIds = [
-	...(featuredPost ? [featuredPost.data.id] : []),
-	...gridPosts.map((p) => p.data.id),
-];
-const tagsByEntry = await getTermsForEntries("posts", tagEntryIds, "tag");
-
-const featuredTags = featuredPost
-	? (tagsByEntry.get(featuredPost.data.id) ?? []).map((t) => ({
-			slug: t.slug,
-			label: t.label,
-		}))
-	: [];
-const featuredBylines = featuredPost?.data.bylines ?? [];
-
-const gridPostsWithTags = gridPosts.map((post) => ({
-	post,
-	tags: (tagsByEntry.get(post.data.id) ?? []).map((t) => ({
-		slug: t.slug,
-		label: t.label,
-	})),
-	bylines: post.data.bylines ?? [],
-}));
-
-// Format date helper
-function formatDate(date: Date | null | undefined) {
-	if (!date) return null;
-	return date.toLocaleDateString("en-US", {
-		year: "numeric",
-		month: "long",
-		day: "numeric",
-	});
-}
+import MarketingLayout from "../layouts/MarketingLayout.astro";
 ---
 
-<Base title={siteTitle} description={siteTagline}>
-	{
-		posts.length === 0 ? (
-			<section class="empty-state">
-				<h2>No posts yet</h2>
-				<p>Create your first post in the admin panel.</p>
-				<a href="/_emdash/admin/content/posts/new" class="btn">
-					Create a post
-				</a>
-			</section>
-		) : (
-			<div class="home-content">
-				{/* Featured Post - Side by side */}
-				{featuredPost && (
-					<section class="featured-section">
-						<div class="featured-grid">
-							<a href={`/posts/${featuredPost.id}`} class="featured-image-link">
-								<div class="featured-image">
-									<Image image={featuredPost.data.featured_image} />
-								</div>
-							</a>
-							<div class="featured-content">
-								<div class="featured-meta">
-									{featuredBylines.length > 0 && (
-										<>
-											<div class="featured-bylines">
-												{featuredBylines.slice(0, 2).map((credit, index) => (
-													<>
-														{index > 0 && <span class="byline-sep">,</span>}
-														<span class="featured-byline">
-															{credit.byline.avatarMediaId && (
-																<img
-																	src={`/_emdash/api/media/file/${credit.byline.avatarMediaId}`}
-																	alt={credit.byline.displayName}
-																	class="featured-byline-avatar"
-																/>
-															)}
-															<span class="featured-byline-name">
-																{credit.byline.displayName}
-															</span>
-														</span>
-													</>
-												))}
-												{featuredBylines.length > 2 && (
-													<span class="byline-more">
-														+{featuredBylines.length - 2}
-													</span>
-												)}
-											</div>
-											<span class="meta-dot" />
-										</>
-									)}
-									{formatDate(featuredPost.data.publishedAt) && (
-										<time>{formatDate(featuredPost.data.publishedAt)}</time>
-									)}
-									<span class="meta-dot" />
-									<span>
-										{getReadingTime(featuredPost.data.content)} min read
-									</span>
-								</div>
-								<a
-									href={`/posts/${featuredPost.id}`}
-									class="featured-title-link"
-								>
-									<h1 class="featured-title">{featuredPost.data.title}</h1>
-								</a>
-								{featuredPost.data.excerpt && (
-									<p class="featured-excerpt">{featuredPost.data.excerpt}</p>
-								)}
-								{featuredTags.length > 0 && (
-									<div class="featured-tags">
-										{featuredTags.map((tag) => (
-											<a href={`/tag/${tag.slug}`} class="featured-tag">
-												{tag.label}
-											</a>
-										))}
-									</div>
-								)}
-							</div>
-						</div>
-					</section>
-				)}
+<MarketingLayout
+	title="Little Big Things — Tim & Christina Frazer"
+	description="Little Big Things is the consulting, investing and freelance practice of Tim & Christina Frazer — focused work across data, AI engineering and analytics."
+>
 
-				{/* Latest Posts */}
-				{gridPostsWithTags.length > 0 && (
-					<section class="posts-section">
-						<header class="section-header">
-							<h2 class="section-title">Latest</h2>
-							{hasMorePosts && (
-								<a href="/posts" class="section-link">
-									View all
-								</a>
-							)}
-						</header>
-						<div class="posts-grid">
-							{gridPostsWithTags.map(({ post, tags, bylines }) => (
-								<PostCard
-									title={post.data.title ?? "Untitled"}
-									excerpt={post.data.excerpt}
-									featuredImage={post.data.featured_image}
-									href={`/posts/${post.id}`}
-									date={post.data.publishedAt ?? undefined}
-									readingTime={getReadingTime(post.data.content)}
-									tags={tags}
-									bylines={bylines}
-								/>
-							))}
-						</div>
-					</section>
-				)}
-			</div>
-		)
-	}
-</Base>
 
-<style>
-	.home-content {
-		max-width: var(--wide-width);
-		margin: 0 auto;
-		padding: var(--spacing-16) var(--spacing-6);
-	}
+  <!-- Vertical type spine running down the left edge -->
+  <div class="spine" aria-hidden="true">
+    ESTABLISHED 2017<span class="dot"></span>PHILADELPHIA<span class="dot"></span>VANCOUVER<span class="dot"></span>LONDON<span class="dot"></span>NEW YORK
+  </div>
 
-	/* Featured Section - Side by side */
-	.featured-section {
-		margin-bottom: var(--spacing-16);
-	}
+  <!-- ===== NAV ===== -->
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="nav-mark" href="#top" aria-label="Little Big Things — home">
+        <svg class="lbt-mark" viewBox="0 0 160 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M10 120 L35 95 L60 120 Z"/>
+          <path d="M40 120 L75 85 L110 120 Z"/>
+          <path d="M80 120 L120 80 L160 120 Z"/>
+          <rect x="0" y="124" width="160" height="6"/>
+          <path class="notch" d="M78 118 L84 105 L78 105 L84 95 L78 108 L82 108 L74 118 Z"/>
+        </svg>
+        <span class="wm">Little Big Things<small>Tim &amp; Christina Frazer</small></span>
+      </a>
+      <div class="nav-links">
+        <a href="#services">Services</a>
+        <a href="#focus" class="lk-hide-sm">Focus</a>
+        <a href="#about" class="lk-hide-sm">About</a>
+        <a href="#podcast">Podcast</a>
+        <span class="sep" aria-hidden="true"></span>
+        <a class="btn btn-primary" href="https://calendar.notion.so/meet/timfrazer/knnbg4p9z" style="color: rgb(255, 250, 248)">Book a call <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </nav>
 
-	.featured-grid {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: var(--spacing-8);
-		align-items: center;
-	}
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="top">
+    <div class="stripes" aria-hidden="true"></div>
 
-	.featured-image-link {
-		grid-column: 1 / 3;
-		display: block;
-		/* Extend to viewport edge, but cap at -6rem minimum extension */
-		margin-left: min(
-			-6rem,
-			calc(-1 * (var(--spacing-6) + (100vw - var(--wide-width)) / 2))
-		);
-	}
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow">
+          <span class="bar"></span>
+          <span class="num">EST 2017</span>
+          <span>· A small practice in big things</span>
+        </div>
 
-	.featured-image {
-		overflow: hidden;
-		border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-		background: var(--color-surface);
-	}
+        <h1 class="hero-headline">
+          <span class="ln1">the little things</span>
+          <span class="ln2"><em>compound.</em></span>
+        </h1>
 
-	.featured-image img {
-		width: 100%;
-		height: auto;
-		aspect-ratio: 4 / 3;
-		object-fit: cover;
-		transition: transform 0.4s ease;
-	}
+        <p class="hero-lede">
+          <strong>Tim &amp; Christina Frazer</strong> run a consulting, investing, and freelance practice across AI, data, and software engineering &mdash; from a household where the same operating principle applies to a Series&nbsp;A roadmap and a bedtime routine.
+        </p>
 
-	.featured-image-link:hover .featured-image img,
-	.featured-grid:has(.featured-title-link:hover) .featured-image img {
-		transform: scale(1.02);
-	}
+        <div class="hero-ctas">
+          <a class="btn btn-primary btn-lg" href="https://calendar.notion.so/meet/timfrazer/knnbg4p9z" style="color: rgb(255, 250, 248)">Book a call <span class="arrow">→</span></a>
+          <a class="btn btn-ghost btn-lg" href="#podcast">Hear the podcast</a>
+        </div>
+      </div>
 
-	.featured-content {
-		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-4);
-	}
+      <aside class="hero-side" aria-hidden="true">
+        <div class="marker">
+          <b>EST 2017</b> &nbsp;·&nbsp; PHL · YVR · LDN · NYC &nbsp;·&nbsp; Small, by design
+        </div>
+      </aside>
+    </div>
 
-	.featured-meta {
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-		column-gap: var(--spacing-3);
-		row-gap: var(--spacing-1);
-		font-size: var(--font-size-sm);
-		color: var(--color-muted);
-	}
+    <div class="container hero-foot">
+      <div class="pair">
+        <b>What we do</b>
+        Consulting, investing, and freelance work for teams shipping with data &amp; AI.
+      </div>
+      <div class="ranges">
+        <div class="pair"><b>For</b>Founders &middot; CTOs &middot; product leaders</div>
+        <div class="pair"><b>Across</b>AI &middot; Data &middot; Software engineering</div>
+        <div class="pair"><b>Also</b>A weekly podcast on raising young kids &mdash; with the research that backs it</div>
+      </div>
+    </div>
+  </section>
 
-	.meta-dot {
-		width: 3px;
-		height: 3px;
-		border-radius: 50%;
-		background: var(--color-muted);
-	}
+  <!-- ===== SERVICES ===== -->
+  <section class="services" id="services">
+    <div class="container">
+      <header class="section-head">
+        <div>
+          <div class="eyebrow"><span class="num">01</span><span class="bar"></span><span>What we do</span></div>
+          <h2 class="section-title">Three ways we&rsquo;ll work together &mdash; or not at all.</h2>
+        </div>
+        <p class="section-kicker">
+          We keep the practice small on purpose, because targeted, specific work produces outsized impact. Tim and Christina lead every engagement, and pull in the right collaborators when the work calls for them.
+        </p>
+      </header>
 
-	/* Featured bylines */
-	.featured-bylines {
-		display: flex;
-		align-items: center;
-		gap: 2px;
-	}
+      <div class="stack">
+        <article class="stack-row">
+          <div class="stack-num">01 / Consulting</div>
+          <h3 class="stack-h">Data &amp; AI strategy<small>For the team about to commit a year to it</small></h3>
+          <div class="stack-body">
+            <p>We come in for the planning quarter, not the rebuild. Data strategy, AI strategy, and the business-development &amp; marketing scaffolding that makes either one land. Output is a defensible plan, a working prototype, and the language your exec team will actually use in the next board meeting.</p>
+          </div>
+          <div class="stack-meta"><b>4&ndash;12 weeks</b>Fractional or fixed scope</div>
+        </article>
 
-	.featured-byline {
-		display: inline-flex;
-		align-items: center;
-		gap: var(--spacing-2);
-	}
+        <article class="stack-row">
+          <div class="stack-num">02 / Investing</div>
+          <h3 class="stack-h">Early-stage checks<small>Where we&rsquo;d have taken the meeting anyway</small></h3>
+          <div class="stack-body">
+            <p>We write small checks into pre-seed and seed-stage companies building in our circle &mdash; AI infrastructure, vertical AI for under-served industries, and developer tooling. We invest where we can be useful for more than the cheque: intros, hiring loops, technical review.</p>
+          </div>
+          <div class="stack-meta"><b>$25k&ndash;$100k</b>Pre-seed / seed only</div>
+        </article>
 
-	.featured-byline-avatar {
-		width: var(--avatar-size-md);
-		height: var(--avatar-size-md);
-		border-radius: 50%;
-		object-fit: cover;
-	}
+        <article class="stack-row">
+          <div class="stack-num">03 / Freelance</div>
+          <h3 class="stack-h">Data foundations &amp; systems<small>Strategy, analytics, and the engineering that holds them up</small></h3>
+          <div class="stack-body">
+            <p>The build that doesn&rsquo;t fit a full hire. Data foundations &mdash; warehouses, pipelines, modelling. Analytics that an exec team will actually open. Systems improvement on what&rsquo;s already shipped. We lead with our own hands, bring in trusted collaborators when the work calls for them, and ship code with the runbook to match.</p>
+          </div>
+          <div class="stack-meta"><b>2&ndash;8 weeks</b>Fixed-scope sprints</div>
+        </article>
+      </div>
+    </div>
+  </section>
 
-	.featured-byline-name {
-		font-weight: 500;
-		color: var(--color-text-secondary);
-	}
+  <!-- ===== FOCUS ===== -->
+  <section id="focus">
+    <div class="container">
+      <header class="section-head">
+        <div>
+          <div class="eyebrow"><span class="num">02</span><span class="bar"></span><span>Where we work</span></div>
+          <h2 class="section-title">Three disciplines, one operating system.</h2>
+        </div>
+        <p class="section-kicker">
+          We don&rsquo;t pretend to be generalists. The work lives in the overlap of AI, data, and the software engineering that quietly holds both up.
+        </p>
+      </header>
 
-	.byline-sep {
-		color: var(--color-muted);
-		margin-right: 2px;
-	}
+      <div class="focus-grid">
+        <article class="focus-cell">
+          <div class="focus-bars" aria-hidden="true"><span></span><span></span><span></span></div>
+          <h3 class="focus-name">AI</h3>
+          <p>Picking what to build, what to buy, and what to leave alone for another quarter. Strategy first, evals second, demos last.</p>
+          <div class="focus-tags">
+            <span class="focus-tag">AI strategy</span>
+            <span class="focus-tag">Evaluation</span>
+            <span class="focus-tag">Agent design</span>
+            <span class="focus-tag">RAG &amp; retrieval</span>
+          </div>
+        </article>
 
-	.byline-more {
-		font-size: var(--font-size-xs);
-		color: var(--color-muted);
-		margin-left: 2px;
-	}
+        <article class="focus-cell">
+          <div class="focus-bars" aria-hidden="true"><span></span><span></span><span></span></div>
+          <h3 class="focus-name">Data</h3>
+          <p>The unglamorous half. Models, pipelines, warehousing, and the governance that lets a team trust its own dashboards again.</p>
+          <div class="focus-tags">
+            <span class="focus-tag">Data strategy</span>
+            <span class="focus-tag">Warehousing</span>
+            <span class="focus-tag">Pipelines</span>
+            <span class="focus-tag">Modelling</span>
+          </div>
+        </article>
 
-	.featured-title-link {
-		text-decoration: none;
-		color: inherit;
-	}
+        <article class="focus-cell">
+          <div class="focus-bars" aria-hidden="true"><span></span><span></span><span></span></div>
+          <h3 class="focus-name">Software engineering</h3>
+          <p>Where the strategy meets shipped product. Backends, internal tools, and the small surfaces customers actually touch.</p>
+          <div class="focus-tags">
+            <span class="focus-tag">TypeScript</span>
+            <span class="focus-tag">Python</span>
+            <span class="focus-tag">Postgres</span>
+            <span class="focus-tag">Internal tools</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
 
-	.featured-title {
-		font-size: clamp(var(--font-size-2xl), 4vw, var(--font-size-4xl));
-		font-weight: 700;
-		line-height: var(--leading-tight);
-		letter-spacing: var(--tracking-tight);
-		transition: color var(--transition-fast);
-	}
+  <!-- ===== ABOUT ===== -->
+  <section id="about" style="background: color-mix(in srgb, var(--page-fg) 3%, var(--page-bg));">
+    <div class="container">
+      <header class="section-head">
+        <div>
+          <div class="eyebrow"><span class="num">03</span><span class="bar"></span><span>Small, by design</span></div>
+          <h2 class="section-title">Targeted work. Outsized impact.</h2>
+        </div>
+        <p class="section-kicker">
+          Tim &amp; Christina Frazer lead the practice. We stay small because specific, well-scoped work is where we move the needle &mdash; and we bring in trusted engineers and operators when an engagement calls for more hands.
+        </p>
+      </header>
 
-	.featured-title-link:hover .featured-title,
-	.featured-grid:has(.featured-image-link:hover) .featured-title {
-		color: var(--color-accent);
-	}
+      <div class="about-grid">
+        <figure class="couple-photo">
+          <img src="/assets/photo-christina.jpeg" alt="Christina Frazer, Brooklyn 2020." loading="eager" />
+          <figcaption class="ptag">Christina &middot; Brooklyn, 2020</figcaption>
+        </figure>
 
-	.featured-excerpt {
-		font-size: var(--font-size-lg);
-		line-height: var(--leading-relaxed);
-		color: var(--color-text-secondary);
-	}
+        <article class="about-card">
+          <div class="role">Co-founder &middot; Data, data engineering, analytics &amp; AI engineering</div>
+          <h3 class="name">Tim Frazer</h3>
+          <p>Self-taught engineer turned multi-time Director of Data Engineering. Currently at <strong>Trust &amp; Will</strong>, previously running data &amp; analytics at <strong>Thrive Global</strong> (Arianna Huffington&rsquo;s company) and a senior engineer at <strong>Bonobos</strong> through the Walmart acquisition.</p>
+          <p>Teaches data &amp; Python at <strong>BrainStation</strong> in New York, mentors data engineers through ADPList and Plato. Does the technical due diligence on every investment we write.</p>
+          <div class="tags">
+            <span>Data engineering</span><span>AI strategy</span><span>Technical DD</span>
+          </div>
+        </article>
 
-	.featured-tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--spacing-2);
-		margin-top: var(--spacing-2);
-	}
+        <article class="about-card">
+          <div class="role">Co-founder &middot; Systems, ML &amp; research</div>
+          <h3 class="name">Christina Frazer</h3>
+          <p>System Development Engineer at <strong>Amazon Web Services</strong>. PhD in Neurobiology from <strong>King&rsquo;s College London</strong>, with a fellowship at Tohoku University on stroke imaging. JSPS Summer Fellow, George Brownlee Award.</p>
+          <p>Before AWS, launched and ran <strong>The Lancet Digital Health</strong> as a senior editor &mdash; the journal that ranked first in medical informatics in its first year of publication. Brings the research rigour to every engagement that touches health, life sciences, or evaluation methodology.</p>
+          <div class="tags">
+            <span>Systems engineering</span><span>Machine learning</span><span>Research methods</span><span>Digital health</span>
+          </div>
+        </article>
 
-	.featured-tag {
-		display: inline-block;
-		padding: var(--tag-padding-y) var(--spacing-2);
-		font-size: var(--font-size-xs);
-		color: var(--color-text-secondary);
-		background: var(--color-surface);
-		border-radius: var(--radius);
-		text-decoration: none;
-		transition:
-			color var(--transition-fast),
-			background var(--transition-fast);
-	}
+        <div class="about-quote">
+          <div class="label">Selected work</div>
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="swork-list">
+              <a href="https://trustandwill.com" target="_blank" rel="noopener">Trust &amp; Will</a><span class="sep">·</span>
+              <a href="https://aws.amazon.com" target="_blank" rel="noopener">Amazon Web Services</a><span class="sep">·</span>
+              <a href="https://www.thriveglobal.com" target="_blank" rel="noopener">Thrive Global</a><span class="sep">·</span>
+              <a href="https://bonobos.com" target="_blank" rel="noopener">Bonobos / Walmart</a><span class="sep">·</span>
+              <a href="https://www.vanguardcharitable.org" target="_blank" rel="noopener">Vanguard Charitable</a><span class="sep">·</span>
+              <a href="https://joopiter.com" target="_blank" rel="noopener">Joopiter</a><span class="sep">·</span>
+              <a href="https://molecularyou.com" target="_blank" rel="noopener">Molecular You</a><span class="sep">·</span>
+              <a href="https://www.paihealth.com" target="_blank" rel="noopener">PAI Health</a><span class="sep small">(prev. Mio Global)</span><span class="sep">·</span>
+              <a href="https://www.thelancet.com" target="_blank" rel="noopener">The Lancet</a><span class="sep">·</span>
+              <a href="https://brainstation.io" target="_blank" rel="noopener">BrainStation</a>
+            </div>
+            <div style="font-family: var(--font-ui); font-size: 12px; letter-spacing: .04em; color: var(--page-muted);">Roles &amp; engagements held by Tim &amp; Christina between 2008 &ndash; today.</div>
+          </div>
+          <div class="attr">EST 2017<br/>PHL &middot; YVR &middot; LDN &middot; NYC</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-	.featured-tag:hover {
-		color: var(--color-text);
-		background: var(--color-border);
-	}
+  <!-- ===== PODCAST STRIP ===== -->
+  <section class="podcast" id="podcast">
+    <div class="stripes" aria-hidden="true"></div>
+    <div class="container podcast-grid">
+      <div>
+        <div class="eyebrow"><span class="num">04</span><span class="bar"></span><span>Also from this household</span></div>
+        <h2>We publish a weekly podcast about raising small humans.</h2>
+        <p>
+          Every week Tim &amp; Christina sit down to talk through whatever they&rsquo;re currently figuring out as parents &mdash; sleep, illness, sibling dynamics &mdash; with the research that does (and doesn&rsquo;t) back it. Honest, hedged, citing studies, no hot takes.
+        </p>
+        <a class="podcast-cta" href="https://littlebighumans.co" target="_blank" rel="noopener">
+          Listen at littlebighumans.co <span class="arrow">→</span>
+        </a>
+      </div>
 
-	/* Section header */
-	.section-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: baseline;
-		margin-bottom: var(--spacing-8);
-		padding-bottom: var(--spacing-4);
-		border-bottom: 1px solid var(--color-border-subtle);
-	}
+      <aside class="podcast-meta">
+        <div class="row"><span>Show</span><b>Little Big Humans</b></div>
+        <div class="row"><span>Hosts</span><b>Tim &amp; Christina Frazer</b></div>
+        <div class="row"><span>Cadence</span><b>Weekly</b></div>
+        <div class="row"><span>Topics</span><b>Sleep · feeding · research</b></div>
+        <div class="row"><span>Listen</span><b>Apple · Spotify · Substack</b></div>
+      </aside>
+    </div>
+  </section>
 
-	.section-title {
-		font-size: var(--font-size-sm);
-		font-weight: 500;
-		text-transform: uppercase;
-		letter-spacing: var(--tracking-wider);
-		color: var(--color-muted);
-	}
+  <!-- ===== CONTACT ===== -->
+  <section class="contact" id="contact">
+    <div class="container contact-grid">
+      <div>
+        <div class="eyebrow"><span class="num">05</span><span class="bar"></span><span>Get in touch</span></div>
+        <h2 style="margin-top: 14px;">Tell us what you&rsquo;re trying to <em>ship.</em></h2>
 
-	.section-link {
-		font-size: var(--font-size-sm);
-		color: var(--color-accent);
-		text-decoration: none;
-		transition: color var(--transition-fast);
-	}
+        <form class="contact-form" id="contact-form">
+          <div class="row">
+            <div class="field"><input type="text" placeholder="Your name" required /></div>
+            <div class="field"><input type="email" placeholder="Email" required /></div>
+          </div>
+          <div class="row">
+            <div class="field"><input type="text" placeholder="Company" /></div>
+            <div class="field">
+              <select style="flex:1; border:0; background:transparent; font-family: var(--font-text); font-size: 18px; color: var(--page-fg); padding: 6px 0; appearance:none;">
+                <option>Engagement &mdash; pick one</option>
+                <option>Consulting &mdash; data / AI strategy</option>
+                <option>Freelance &mdash; software engineering</option>
+                <option>Investing &mdash; pitch deck</option>
+                <option>Something else</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <textarea rows="3" placeholder="A sentence or two on the thing you&rsquo;re trying to ship."></textarea>
+          </div>
+          <div class="submit-row">
+            <small>We read every message. No funnel, no auto-reply.</small>
+            <button class="btn btn-primary btn-lg" type="submit">Send <span class="arrow">→</span></button>
+          </div>
+        </form>
+      </div>
 
-	.section-link:hover {
-		color: var(--color-accent-hover);
-	}
+      <aside class="contact-aside">
+        <div class="item">
+          <div class="k">Direct</div>
+          <div class="v" style="font-size: 18px;"><a href="mailto:tim@littlebigthings.co">tim@littlebigthings.co</a></div>
+          <div class="v" style="font-size: 18px; margin-top: 6px;"><a href="mailto:christina@littlebigthings.co">christina@littlebigthings.co</a></div>
+        </div>
+        <div class="item">
+          <div class="k">Calendar</div>
+          <div class="v"><a href="https://calendar.notion.so/meet/timfrazer/knnbg4p9z">Book a 30&minus;minute intro</a></div>
+        </div>
+        <div class="item">
+          <div class="k">Based</div>
+          <div class="v">Philadelphia &middot; Vancouver &middot; London &middot; New York</div>
+          <div class="v" style="font-size: 13px; color: var(--page-muted); margin-top: 4px; line-height: 1.4;">Home base in Philadelphia. We hold a company in Vancouver and run engagements out of London and New York.</div>
+        </div>
+        <div class="item">
+          <div class="k">Currently</div>
+          <div class="v" style="font-size: 16px; color: var(--page-muted); line-height: 1.4;">
+            Booking consulting engagements for Q3 2026. Two freelance slots open in August.
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
 
-	/* Posts Grid */
-	.posts-section {
-	}
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="container foot-grid">
+      <div class="left">
+        <svg class="lbt-mark" viewBox="0 0 160 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M10 120 L35 95 L60 120 Z"/>
+          <path d="M40 120 L75 85 L110 120 Z"/>
+          <path d="M80 120 L120 80 L160 120 Z"/>
+          <rect x="0" y="124" width="160" height="6"/>
+          <path class="notch" d="M78 118 L84 105 L78 105 L84 95 L78 108 L82 108 L74 118 Z"/>
+        </svg>
+        <span>Little Big Things &middot; EST 2017</span>
+      </div>
+      <div class="center">
+        <a href="#services">Services</a>
+        <a href="#focus">Focus</a>
+        <a href="#about">About</a>
+        <a href="#podcast">Podcast</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="right">&copy; 2026 Little Big Things &middot; littlebigthings.co</div>
+    </div>
+  </footer>
 
-	.posts-grid {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: var(--spacing-12) var(--spacing-8);
-	}
-
-	/* Empty State */
-	.empty-state {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: var(--spacing-3);
-		text-align: center;
-		padding: var(--spacing-20) var(--spacing-6);
-		max-width: 400px;
-		margin: 0 auto;
-	}
-
-	.empty-state h2 {
-		font-size: var(--font-size-2xl);
-		font-weight: 600;
-	}
-
-	.empty-state p {
-		color: var(--color-muted);
-	}
-
-	.btn {
-		display: inline-block;
-		margin-top: var(--spacing-4);
-		padding: var(--spacing-3) var(--spacing-6);
-		background: var(--color-accent);
-		color: var(--color-on-accent);
-		text-decoration: none;
-		border-radius: var(--radius);
-		font-size: var(--font-size-sm);
-		font-weight: 500;
-		transition: background var(--transition-fast);
-	}
-
-	.btn:hover {
-		background: var(--color-accent-hover);
-	}
-
-	/* Responsive */
-	@media (max-width: 900px) {
-		.home-content {
-			padding: var(--spacing-6) var(--spacing-4) var(--spacing-12);
-		}
-
-		.featured-image-link {
-			margin-left: 0;
-		}
-
-		.featured-grid {
-			grid-template-columns: 1fr;
-			gap: var(--spacing-6);
-		}
-
-		.featured-image {
-			border-radius: var(--radius-lg);
-		}
-
-		.featured-image img {
-			aspect-ratio: 16 / 9;
-		}
-
-		.posts-grid {
-			grid-template-columns: repeat(2, 1fr);
-			gap: var(--spacing-8) var(--spacing-6);
-		}
-	}
-
-	@media (max-width: 600px) {
-		.featured-title {
-			font-size: var(--font-size-2xl);
-		}
-
-		.posts-grid {
-			grid-template-columns: 1fr;
-			gap: var(--spacing-8);
-		}
-	}
-</style>
+  <script>
+    const contactForm = document.querySelector<HTMLFormElement>("#contact-form");
+    contactForm?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const status = contactForm.querySelector<HTMLElement>(".submit-row small");
+      const button = contactForm.querySelector<HTMLButtonElement>("button[type='submit']");
+      if (status) status.textContent = "Thanks. We’ll be in touch within two business days.";
+      if (button) button.disabled = true;
+    });
+  </script>
+</MarketingLayout>

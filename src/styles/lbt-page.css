@@ -1,0 +1,715 @@
+/* ========================================================================
+       LITTLE BIG THINGS — page styles
+       Built on the Little Big Humans design system. Three themes (paper / ink /
+       mountain) controlled via [data-theme] on <html> by the Tweaks panel.
+       ======================================================================== */
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-text);
+      font-size: var(--fs-body);
+      line-height: var(--lh-body);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      overflow-x: hidden;
+    }
+    img, svg { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; }
+
+    /* ---------- Theme variants ---------- */
+    /* paper (default) — Paper bg, Ink text, Mountain accents */
+    html[data-theme="paper"] {
+      --page-bg: var(--color-paper);
+      --page-fg: var(--color-ink);
+      --page-muted: var(--ink-60);
+      --page-subtle: var(--ink-40);
+      --page-rule: var(--ink-12);
+      --page-rule-strong: var(--ink-20);
+      --page-accent: var(--color-mountain);
+      --page-accent-fg: var(--color-paper);
+      --page-card-bg: #FFFFFF;
+      --mark-color: var(--color-mountain);
+      --stripe-color: var(--color-ink);
+      --stripe-alpha: .035;
+    }
+    /* ink — dark surface, Paper text, Mountain accents */
+    html[data-theme="ink"] {
+      --page-bg: var(--color-ink);
+      --page-fg: var(--color-paper);
+      --page-muted: rgb(255 250 248 / .65);
+      --page-subtle: rgb(255 250 248 / .40);
+      --page-rule: rgb(255 250 248 / .14);
+      --page-rule-strong: rgb(255 250 248 / .24);
+      --page-accent: #6F62FF;            /* lifted Mountain for AA on Ink */
+      --page-accent-fg: var(--color-ink);
+      --page-card-bg: #232326;
+      --mark-color: #6F62FF;
+      --stripe-color: var(--color-paper);
+      --stripe-alpha: .045;
+    }
+    /* mountain — Mountain bg, Paper text, Ink accents. Bold + immersive. */
+    html[data-theme="mountain"] {
+      --page-bg: var(--color-mountain);
+      --page-fg: var(--color-paper);
+      --page-muted: rgb(255 250 248 / .72);
+      --page-subtle: rgb(255 250 248 / .48);
+      --page-rule: rgb(255 250 248 / .18);
+      --page-rule-strong: rgb(255 250 248 / .32);
+      --page-accent: var(--color-paper);
+      --page-accent-fg: var(--color-mountain);
+      --page-card-bg: rgb(255 250 248 / .06);
+      --mark-color: var(--color-paper);
+      --stripe-color: var(--color-paper);
+      --stripe-alpha: .06;
+    }
+
+    body.lbh-baseline { background: var(--page-bg); color: var(--page-fg); transition: background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out); }
+    /* Theme-aware headings — the base design-system rules pin color to Ink; override to track --page-fg so dark / mountain themes read correctly. */
+    body.lbh-baseline h1,
+    body.lbh-baseline h2,
+    body.lbh-baseline h3,
+    body.lbh-baseline .t-h1,
+    body.lbh-baseline .t-h2,
+    body.lbh-baseline .t-h3,
+    body.lbh-baseline .t-subhead { color: var(--page-fg); }
+    /* But the podcast strip lives on the accent surface — invert. */
+    body.lbh-baseline .podcast h2 { color: var(--page-accent-fg); }
+
+    /* ---------- Layout primitives ---------- */
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 56px;
+    }
+    @media (max-width: 720px) {
+      .container { padding: 0 24px; }
+    }
+
+    /* Diagonal stripe motif (matches LBH BG plate at 2-4% opacity) */
+    .stripes {
+      position: absolute; inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(45deg,
+        transparent 0 12%,
+        var(--stripe-color) 12% 14%,
+        transparent 14% 22%,
+        var(--stripe-color) 22% 24%,
+        transparent 24% 100%);
+      opacity: var(--stripe-alpha);
+    }
+
+    /* Vertical spine — runs down the LEFT edge of the page, behind content */
+    .spine {
+      position: fixed;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%) rotate(-90deg);
+      transform-origin: left center;
+      font-family: var(--font-ui);
+      font-size: 10px;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      color: var(--page-subtle);
+      white-space: nowrap;
+      z-index: 5;
+      mix-blend-mode: normal;
+    }
+    .spine .dot {
+      display: inline-block;
+      width: 4px; height: 4px;
+      background: var(--page-accent);
+      vertical-align: middle;
+      margin: 0 12px 2px;
+    }
+    @media (max-width: 960px) { .spine { display: none; } }
+
+    /* ---------- Top nav ---------- */
+    .nav {
+      position: sticky; top: 0; z-index: 20;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: color-mix(in srgb, var(--page-bg) 78%, transparent);
+      border-bottom: 1px solid var(--page-rule);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 0;
+    }
+    .nav-mark { display: flex; align-items: center; gap: 12px; font-family: var(--font-ui); font-weight: 500; }
+    .nav-mark svg { width: 32px; height: auto; }
+    .nav-mark .wm { font-size: 14px; letter-spacing: -.005em; line-height: 1; }
+    .nav-mark .wm small { display: block; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--page-muted); margin-top: 3px; }
+    .nav-links { display: flex; gap: 32px; align-items: center; font-family: var(--font-ui); font-size: 14px; }
+    .nav-links a:not(.btn) { color: var(--page-fg); opacity: .8; transition: opacity var(--dur-base) var(--ease-out); }
+    .nav-links a:not(.btn):hover { opacity: 1; }
+    .nav-links .sep { width: 1px; height: 18px; background: var(--page-rule-strong); }
+    @media (max-width: 720px) { .nav-links { gap: 18px; } .nav-links .lk-hide-sm { display: none; } }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--font-ui); font-weight: 500;
+      padding: 11px 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      transition: box-shadow var(--dur-base) var(--ease-out), transform var(--dur-quick) var(--ease-out), background var(--dur-base) var(--ease-out);
+      font-size: 14px; letter-spacing: -.005em;
+    }
+    .btn-primary { background: var(--page-accent); color: var(--page-accent-fg); }
+    .btn-primary:hover { box-shadow: var(--shadow-2); }
+    .btn-primary:active { transform: translateY(1px); }
+    .btn-ghost { color: var(--page-fg); border-color: var(--page-rule-strong); }
+    .btn-ghost:hover { background: color-mix(in srgb, var(--page-fg) 6%, transparent); }
+    .btn-lg { padding: 14px 22px; font-size: 16px; }
+    .btn .arrow { display: inline-block; transition: transform var(--dur-base) var(--ease-out); }
+    .btn:hover .arrow { transform: translateX(3px); }
+
+    /* ---------- Section scaffolding ---------- */
+    section { position: relative; padding: 96px 0; }
+    @media (max-width: 720px) { section { padding: 64px 0; } }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 12px;
+      font-family: var(--font-ui); font-size: 11px;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--page-muted);
+    }
+    .eyebrow .bar { width: 22px; height: 2px; background: var(--page-accent); display: inline-block; }
+    .eyebrow .num { color: var(--page-accent); font-weight: 500; }
+
+    .section-rule {
+      border: 0; height: 1px; background: var(--page-rule);
+      margin: 0; width: 100%;
+    }
+
+    /* ========================================================================
+       HERO
+       Massive split headline. Eyebrow on left, vertical "EST" tag on right.
+       Asymmetric — second line of headline indented hard.
+       ======================================================================== */
+    .hero {
+      padding: 88px 0 120px;
+      position: relative;
+      min-height: calc(100vh - 70px);
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .hero .stripes { opacity: calc(var(--stripe-alpha) * 1.4); }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 200px;
+      gap: 40px;
+      align-items: start;
+      position: relative;
+    }
+    @media (max-width: 960px) { .hero-grid { grid-template-columns: 1fr; } .hero-side { display: none; } }
+
+    .hero-headline {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(56px, 11.5vw, 168px);
+      line-height: .94;
+      letter-spacing: -.025em;
+      margin: 28px 0 0;
+      color: var(--page-fg);
+      text-wrap: balance;
+    }
+    .hero-headline .ln1 { display: block; }
+    .hero-headline .ln2 { display: block; padding-left: 14%; }
+    .hero-headline em {
+      font-style: normal;
+      color: var(--page-accent);
+      position: relative;
+      white-space: nowrap;
+    }
+    .hero-headline em::after {
+      content: ""; position: absolute;
+      left: 0; right: 0; bottom: -.04em;
+      height: .08em;
+      background: var(--page-accent);
+      opacity: .25;
+    }
+
+    .hero-lede {
+      max-width: 640px;
+      margin: 48px 0 0;
+      font-family: var(--font-text);
+      font-size: clamp(18px, 1.7vw, 22px);
+      line-height: 1.45;
+      color: var(--page-muted);
+    }
+    .hero-lede strong { color: var(--page-fg); font-weight: 600; }
+
+    .hero-ctas {
+      margin-top: 40px;
+      display: flex; gap: 14px; flex-wrap: wrap;
+    }
+
+    .hero-side {
+      display: flex; flex-direction: column; align-items: flex-end; gap: 18px;
+      padding-top: 32px;
+    }
+    .hero-side .marker {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-family: var(--font-ui);
+      font-size: 11px;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: var(--page-muted);
+      border-left: 1px solid var(--page-rule-strong);
+      padding: 16px 0 16px 14px;
+    }
+    .hero-side .marker b { color: var(--page-fg); font-weight: 500; }
+
+    .hero-foot {
+      display: flex; justify-content: space-between; align-items: end; gap: 24px;
+      padding-top: 80px;
+      font-family: var(--font-ui); font-size: 12px;
+      color: var(--page-muted);
+      letter-spacing: .02em;
+    }
+    .hero-foot .pair { display: flex; flex-direction: column; gap: 6px; max-width: 240px; }
+    .hero-foot .pair b { color: var(--page-fg); font-weight: 500; font-size: 13px; letter-spacing: -.005em; }
+    .hero-foot .ranges { display: flex; gap: 32px; flex-wrap: wrap; }
+    @media (max-width: 720px) { .hero-foot { flex-direction: column; align-items: start; padding-top: 48px; } }
+
+    /* ========================================================================
+       SERVICES — numbered stack
+       ======================================================================== */
+    .services { background: color-mix(in srgb, var(--page-fg) 3%, var(--page-bg)); }
+    html[data-theme="ink"] .services { background: #161618; }
+    html[data-theme="mountain"] .services { background: color-mix(in srgb, black 14%, var(--page-bg)); }
+
+    .section-head {
+      display: grid; grid-template-columns: 1fr 1.4fr; gap: 64px; align-items: end;
+      margin-bottom: 64px;
+    }
+    @media (max-width: 880px) { .section-head { grid-template-columns: 1fr; gap: 24px; } }
+    .section-title {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(36px, 5vw, 64px);
+      line-height: 1.0; letter-spacing: -.018em;
+      margin: 12px 0 0;
+      text-wrap: balance;
+    }
+    .section-kicker { font-family: var(--font-text); font-size: 17px; line-height: 1.5; color: var(--page-muted); max-width: 520px; }
+
+    .stack { border-top: 1px solid var(--page-rule); }
+    .stack-row {
+      display: grid;
+      grid-template-columns: 90px 1.1fr 1.8fr 90px;
+      gap: 32px;
+      align-items: start;
+      padding: 36px 0 36px;
+      border-bottom: 1px solid var(--page-rule);
+      transition: background var(--dur-base) var(--ease-out);
+    }
+    .stack-row:hover { background: color-mix(in srgb, var(--page-fg) 4%, transparent); }
+    .stack-num {
+      font-family: var(--font-ui); font-size: 12px; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--page-accent); font-weight: 500;
+      padding-top: 8px;
+    }
+    .stack-h {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(28px, 3.4vw, 44px);
+      line-height: 1.05; letter-spacing: -.012em;
+    }
+    .stack-h small { display: block; font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--page-muted); margin-top: 8px; font-family: var(--font-ui); }
+    .stack-body { font-family: var(--font-text); font-size: 17px; line-height: 1.55; color: var(--page-muted); padding-top: 8px; }
+    .stack-body strong { color: var(--page-fg); font-weight: 600; }
+    .stack-meta { font-family: var(--font-ui); font-size: 12px; color: var(--page-subtle); padding-top: 12px; text-align: right; letter-spacing: .02em; }
+    .stack-meta b { display: block; color: var(--page-fg); font-weight: 500; font-size: 13px; letter-spacing: 0; margin-bottom: 4px; }
+    @media (max-width: 880px) {
+      .stack-row { grid-template-columns: 1fr; gap: 16px; }
+      .stack-meta { text-align: left; }
+    }
+
+    /* ========================================================================
+       FOCUS — three big typographic blocks with mountain bars
+       ======================================================================== */
+    .focus-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--page-rule);
+    }
+    @media (max-width: 880px) { .focus-grid { grid-template-columns: 1fr; } }
+    .focus-cell {
+      padding: 48px 32px 56px 0;
+      border-right: 1px solid var(--page-rule);
+      position: relative;
+    }
+    .focus-cell:last-child { border-right: 0; }
+    .focus-cell:not(:first-child) { padding-left: 32px; }
+    @media (max-width: 880px) {
+      .focus-cell { border-right: 0; border-bottom: 1px solid var(--page-rule); padding: 36px 0; }
+      .focus-cell:not(:first-child) { padding-left: 0; }
+      .focus-cell:last-child { border-bottom: 0; }
+    }
+    .focus-bars {
+      display: flex; align-items: flex-end; gap: 6px;
+      height: 56px;
+      margin-bottom: 24px;
+    }
+    .focus-bars span { display: block; width: 14px; background: var(--page-accent); }
+    .focus-cell:nth-child(1) .focus-bars span:nth-child(1) { height: 30%; }
+    .focus-cell:nth-child(1) .focus-bars span:nth-child(2) { height: 60%; }
+    .focus-cell:nth-child(1) .focus-bars span:nth-child(3) { height: 90%; }
+    .focus-cell:nth-child(2) .focus-bars span:nth-child(1) { height: 50%; }
+    .focus-cell:nth-child(2) .focus-bars span:nth-child(2) { height: 100%; }
+    .focus-cell:nth-child(2) .focus-bars span:nth-child(3) { height: 70%; }
+    .focus-cell:nth-child(3) .focus-bars span:nth-child(1) { height: 80%; }
+    .focus-cell:nth-child(3) .focus-bars span:nth-child(2) { height: 40%; }
+    .focus-cell:nth-child(3) .focus-bars span:nth-child(3) { height: 100%; }
+    .focus-name {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(32px, 3.4vw, 44px);
+      line-height: 1.0; letter-spacing: -.014em;
+      margin: 0 0 18px;
+    }
+    .focus-cell p { font-family: var(--font-text); font-size: 16px; line-height: 1.55; color: var(--page-muted); margin: 0 0 20px; }
+    .focus-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .focus-tag {
+      font-family: var(--font-ui); font-size: 11px; letter-spacing: .04em;
+      padding: 5px 10px;
+      border: 1px solid var(--page-rule-strong);
+      border-radius: var(--radius-pill);
+      color: var(--page-muted);
+    }
+
+    /* ========================================================================
+       ABOUT — Tim & Christina split
+       ======================================================================== */
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+    @media (max-width: 880px) { .about-grid { grid-template-columns: 1fr; gap: 48px; } }
+    .about-card {
+      border-top: 2px solid var(--page-fg);
+      padding-top: 28px;
+    }
+    /* Single couple photo — spans both columns, sits above the two bios. */
+    .couple-photo {
+      grid-column: 1 / -1;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 7;
+      overflow: hidden;
+      border: 1px solid var(--page-rule-strong);
+      background: color-mix(in srgb, var(--page-fg) 6%, var(--page-bg));
+      margin-bottom: 16px;
+    }
+    .couple-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: 50% 22%;
+      display: block;
+      filter: saturate(.96) contrast(1.02);
+    }
+    .couple-photo .ptag {
+      position: absolute; left: 16px; bottom: 16px;
+      font-family: var(--font-ui); font-size: 11px;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--color-paper);
+      background: rgb(28 28 30 / .55);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      padding: 7px 12px; border-radius: var(--radius-sm);
+    }
+    @media (max-width: 720px) {
+      .couple-photo { aspect-ratio: 4 / 3; }
+      .couple-photo img { object-position: 50% 28%; }
+    }
+    .about-card .role {
+      font-family: var(--font-ui); font-size: 11px; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--page-muted);
+      margin-bottom: 8px;
+    }
+    .about-card .name {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(40px, 5vw, 60px);
+      line-height: 1.0; letter-spacing: -.018em;
+      margin: 0 0 24px;
+    }
+    .about-card p {
+      font-family: var(--font-text); font-size: 17px; line-height: 1.55;
+      color: var(--page-muted); margin: 0 0 16px;
+    }
+    .about-card p strong { color: var(--page-fg); font-weight: 600; }
+    .about-card .tags {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-top: 22px;
+      font-family: var(--font-ui); font-size: 11px;
+      letter-spacing: .04em; color: var(--page-muted);
+    }
+    .about-card .tags span { padding: 5px 10px; border: 1px solid var(--page-rule-strong); border-radius: var(--radius-pill); }
+
+    /* Selected-work list — display-face links, hairline underline on hover. */
+    .swork-list {
+      font-family: var(--font-display); font-weight: 500;
+      font-size: clamp(20px, 2.2vw, 30px);
+      line-height: 1.35; letter-spacing: -.008em;
+      color: var(--page-fg);
+    }
+    .swork-list a {
+      color: var(--page-fg);
+      border-bottom: 1px solid transparent;
+      transition: border-color var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
+      white-space: nowrap;
+    }
+    .swork-list a:hover { color: var(--page-accent); border-bottom-color: var(--page-accent); }
+    .swork-list .sep { color: var(--page-subtle); margin: 0 8px; }
+    .swork-list .sep.small { font-family: var(--font-ui); font-size: 13px; letter-spacing: .02em; font-weight: 400; margin: 0 4px 0 0; color: var(--page-muted); white-space: nowrap; }
+
+    .about-quote {
+      grid-column: 1 / -1;
+      margin-top: 40px;
+      padding: 32px 0 0;
+      border-top: 1px solid var(--page-rule);
+      display: grid;
+      grid-template-columns: 90px 1fr 200px;
+      gap: 32px;
+      align-items: start;
+    }
+    .about-quote .label {
+      font-family: var(--font-ui); font-size: 11px; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--page-muted);
+    }
+    .about-quote q {
+      font-family: var(--font-text); font-style: italic; font-weight: 500;
+      font-size: clamp(20px, 2vw, 28px); line-height: 1.4;
+      color: var(--page-fg);
+      quotes: "\201C" "\201D";
+    }
+    .about-quote .attr {
+      font-family: var(--font-ui); font-size: 12px; color: var(--page-muted);
+      text-align: right; letter-spacing: .02em;
+    }
+    @media (max-width: 880px) {
+      .about-quote { grid-template-columns: 1fr; }
+      .about-quote .attr { text-align: left; }
+    }
+
+    /* ========================================================================
+       PODCAST STRIP — accent bar + link out to littlebighumans.co
+       ======================================================================== */
+    .podcast {
+      background: var(--page-accent);
+      color: var(--page-accent-fg);
+      position: relative;
+      overflow: hidden;
+    }
+    .podcast .stripes { color: var(--page-accent-fg); opacity: .055; --stripe-color: currentColor; }
+    .podcast-grid {
+      display: grid; grid-template-columns: 1.4fr 1fr;
+      gap: 64px; align-items: end;
+      position: relative;
+    }
+    @media (max-width: 880px) { .podcast-grid { grid-template-columns: 1fr; gap: 32px; } }
+    .podcast .eyebrow { color: color-mix(in srgb, var(--page-accent-fg) 70%, transparent); }
+    .podcast .eyebrow .bar { background: var(--page-accent-fg); }
+    .podcast .eyebrow .num { color: var(--page-accent-fg); }
+    .podcast h2 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(36px, 4.6vw, 60px);
+      line-height: 1.02; letter-spacing: -.016em;
+      margin: 14px 0 0;
+      color: var(--page-accent-fg);
+      max-width: 16ch;
+      text-wrap: balance;
+    }
+    .podcast p {
+      font-family: var(--font-text); font-size: 17px; line-height: 1.55;
+      color: color-mix(in srgb, var(--page-accent-fg) 82%, transparent);
+      margin: 22px 0 0; max-width: 50ch;
+    }
+    .podcast-meta {
+      font-family: var(--font-ui); font-size: 12px; letter-spacing: .04em;
+      color: color-mix(in srgb, var(--page-accent-fg) 70%, transparent);
+      border-left: 1px solid color-mix(in srgb, var(--page-accent-fg) 35%, transparent);
+      padding-left: 24px;
+    }
+    .podcast-meta .row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed color-mix(in srgb, var(--page-accent-fg) 25%, transparent); gap: 16px; }
+    .podcast-meta .row:last-child { border-bottom: 0; }
+    .podcast-meta b { color: var(--page-accent-fg); font-weight: 500; }
+    .podcast-cta {
+      margin-top: 36px;
+      display: inline-flex; align-items: center; gap: 12px;
+      font-family: var(--font-ui); font-weight: 500; font-size: 16px;
+      padding: 14px 22px;
+      background: var(--page-accent-fg);
+      color: var(--page-accent);
+      border-radius: var(--radius-md);
+      transition: box-shadow var(--dur-base) var(--ease-out);
+    }
+    .podcast-cta:hover { box-shadow: var(--shadow-2); }
+    .podcast-cta .arrow { transition: transform var(--dur-base) var(--ease-out); }
+    .podcast-cta:hover .arrow { transform: translateX(3px); }
+
+    /* ========================================================================
+       CONTACT
+       ======================================================================== */
+    .contact {
+      padding: 120px 0;
+    }
+    .contact-grid {
+      display: grid; grid-template-columns: 1.2fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    @media (max-width: 880px) { .contact-grid { grid-template-columns: 1fr; gap: 48px; } }
+    .contact h2 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(40px, 6vw, 88px);
+      line-height: .98; letter-spacing: -.022em;
+      margin: 0;
+    }
+    .contact h2 em { font-style: normal; color: var(--page-accent); }
+    .contact-form {
+      border-top: 1px solid var(--page-rule);
+      padding-top: 28px;
+      display: flex; flex-direction: column; gap: 18px;
+    }
+    .contact-form label { font-family: var(--font-ui); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--page-muted); }
+    .contact-form .field {
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid var(--page-rule-strong);
+      padding-bottom: 10px;
+    }
+    .contact-form .field input,
+    .contact-form .field textarea {
+      flex: 1; border: 0; outline: 0; background: transparent;
+      font-family: var(--font-text); font-size: 18px; color: var(--page-fg);
+      padding: 6px 0;
+      resize: none;
+    }
+    .contact-form .field input::placeholder,
+    .contact-form .field textarea::placeholder { color: var(--page-subtle); font-family: var(--font-text); }
+    .contact-form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    @media (max-width: 720px) { .contact-form .row { grid-template-columns: 1fr; gap: 18px; } }
+    .contact-form .submit-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-top: 8px; flex-wrap: wrap; }
+    .contact-form .submit-row small { font-family: var(--font-ui); font-size: 12px; color: var(--page-muted); letter-spacing: .02em; }
+    .contact-aside {
+      border-left: 1px solid var(--page-rule);
+      padding-left: 32px;
+      display: flex; flex-direction: column; gap: 24px;
+    }
+    @media (max-width: 880px) { .contact-aside { border-left: 0; border-top: 1px solid var(--page-rule); padding: 28px 0 0; } }
+    .contact-aside .item .k { font-family: var(--font-ui); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--page-muted); margin-bottom: 6px; }
+    .contact-aside .item .v { font-family: var(--font-display); font-size: 22px; font-weight: 500; letter-spacing: -.004em; }
+    .contact-aside .item .v a { border-bottom: 1px solid var(--page-rule-strong); padding-bottom: 2px; }
+    .contact-aside .item .v a:hover { border-color: var(--page-accent); }
+
+    /* ========================================================================
+       FOOTER
+       ======================================================================== */
+    footer {
+      border-top: 1px solid var(--page-rule);
+      padding: 40px 0 32px;
+      font-family: var(--font-ui);
+      font-size: 12px;
+      color: var(--page-muted);
+    }
+    .foot-grid {
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      gap: 40px; align-items: center;
+    }
+    @media (max-width: 720px) { .foot-grid { grid-template-columns: 1fr; gap: 20px; } }
+    .foot-grid .center { display: flex; gap: 24px; }
+    .foot-grid .center a:hover { color: var(--page-fg); }
+    .foot-grid .right { text-align: right; letter-spacing: .02em; }
+    @media (max-width: 720px) { .foot-grid .right { text-align: left; } }
+    .foot-grid .left { display: flex; align-items: center; gap: 12px; }
+    .foot-grid .left svg { width: 24px; height: auto; }
+
+    /* ---------- Brand mark helper ---------- */
+    .lbt-mark path { fill: var(--mark-color); }
+    .lbt-mark rect { fill: var(--mark-color); }
+    .lbt-mark .notch { fill: var(--page-bg); }
+
+    /* Re-paint notch when mountain theme (so it cuts back to mountain bg properly) */
+    html[data-theme="paper"] .podcast .lbt-mark .notch { fill: var(--page-accent); }
+    html[data-theme="ink"] .podcast .lbt-mark .notch { fill: var(--page-accent); }
+    html[data-theme="mountain"] .podcast .lbt-mark .notch { fill: var(--page-accent); }
+    html[data-theme="paper"] .podcast .lbt-mark path,
+    html[data-theme="paper"] .podcast .lbt-mark rect { fill: var(--page-accent-fg); }
+    html[data-theme="ink"] .podcast .lbt-mark path,
+    html[data-theme="ink"] .podcast .lbt-mark rect { fill: var(--page-accent-fg); }
+    html[data-theme="mountain"] .podcast .lbt-mark path,
+    html[data-theme="mountain"] .podcast .lbt-mark rect { fill: var(--page-accent-fg); }
+
+    /* ink theme accent-fg must stay paper for legibility on the lifted purple */
+    html[data-theme="ink"] { --page-accent-fg: var(--color-paper); }
+    /* Selection */
+    ::selection { background: var(--page-accent); color: var(--page-accent-fg); }
+
+    /* ========================================================================
+       CLOSER — full-bleed wide bridge photo with caption stripe.
+       ======================================================================== */
+    .closer {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 21 / 9;
+      max-height: 760px;
+      overflow: hidden;
+      background: var(--color-ink);
+      border-top: 1px solid var(--page-rule);
+    }
+    .closer img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: 50% 58%;
+      display: block;
+      filter: saturate(.94) contrast(1.02);
+    }
+    .closer-caption {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: 28px 56px;
+      display: flex; justify-content: space-between; align-items: end; gap: 32px;
+      font-family: var(--font-ui);
+      color: var(--color-paper);
+      background: linear-gradient(to top, rgb(0 0 0 / .55), rgb(0 0 0 / 0));
+      flex-wrap: wrap;
+    }
+    .closer-caption .lead {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: clamp(22px, 2.4vw, 34px);
+      line-height: 1.2;
+      letter-spacing: -.012em;
+      max-width: 22ch;
+      text-wrap: balance;
+    }
+    .closer-caption .meta {
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      opacity: .82;
+      text-align: right;
+    }
+    /* LBT mark sitting in the top-left of the closer image. */
+    .closer-mark {
+      position: absolute;
+      top: 28px; left: 56px;
+      width: 84px; height: auto;
+      filter: drop-shadow(0 2px 12px rgb(0 0 0 / .35));
+    }
+    .closer-mark path,
+    .closer-mark rect { fill: var(--color-paper); }
+    .closer-mark .notch { fill: transparent; }
+    @media (max-width: 720px) {
+      .closer-mark { top: 20px; left: 24px; width: 64px; }
+    }
+    @media (max-width: 720px) {
+      .closer { aspect-ratio: 4 / 5; max-height: none; }
+      .closer-caption { padding: 20px 24px; }
+      .closer-caption .meta { text-align: left; }
+    }
+
+    /* For Tweaks panel docked positioning */
+    .tweaks-host { z-index: 9999; }

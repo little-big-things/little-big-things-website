@@ -1,0 +1,256 @@
+/* ---------------------------------------------------------------------------
+   Little Big Humans — Colors & Type Foundation
+   Personal brand for Tim Frazer (LinkedIn, Substack, podcast, YouTube)
+   Source: uploads/Colors.pdf, uploads/Typography.pdf
+   --------------------------------------------------------------------------- */
+
+/* ---------- Webfonts: Söhne (Klim) ---------- */
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/soehne-buch.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/soehne-kraftig.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/soehne-halbfett.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- Alt + Body stacks via Google Fonts ----------
+   The brand guide specifies:
+   - Display/Headlines:  Söhne (above)
+   - Headlines-Alt:      Manrope (Bold / SemiBold / Medium)
+   - Body / Text:        Lora (SemiBold / Medium / Regular)
+   Both Manrope and Lora are Google Fonts — load them in HTML head:
+   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+*/
+
+:root {
+  /* =========================================================================
+     COLOR — the brand uses exactly three named colors. Resist adding more.
+     ========================================================================= */
+  --color-mountain:   #190ADB;   /* primary — rich blue, named for the icon's peaks */
+  --color-paper:      #FFFAF8;   /* warm off-white background */
+  --color-ink:        #1C1C1E;   /* near-black for type and dark surfaces */
+
+  /* RGB triplets for alpha use: rgb(var(--color-ink-rgb) / .12) */
+  --color-mountain-rgb: 25 10 219;
+  --color-paper-rgb:    255 250 248;
+  --color-ink-rgb:      28 28 30;
+
+  /* Derived neutrals — DO NOT introduce new hues; only tint Ink with alpha. */
+  --ink-12:  rgb(28 28 30 / .12);   /* hairline rules, subtle borders */
+  --ink-20:  rgb(28 28 30 / .20);   /* divider, input border */
+  --ink-40:  rgb(28 28 30 / .40);   /* tertiary text */
+  --ink-60:  rgb(28 28 30 / .60);   /* secondary text */
+  --ink-80:  rgb(28 28 30 / .80);   /* primary body on paper */
+  --paper-60: rgb(255 250 248 / .60);
+  --paper-80: rgb(255 250 248 / .80);
+
+  /* =========================================================================
+     SEMANTIC SURFACE/TEXT TOKENS — use these in components, not raw colors.
+     ========================================================================= */
+  --bg:           var(--color-paper);
+  --bg-elev:      #FFFFFF;                   /* card / sheet over paper */
+  --bg-inverse:   var(--color-ink);
+  --bg-accent:    var(--color-mountain);
+
+  --fg:           var(--color-ink);          /* primary text on paper */
+  --fg-muted:     var(--ink-60);
+  --fg-subtle:    var(--ink-40);
+  --fg-on-accent: var(--color-paper);        /* text on Mountain */
+  --fg-on-inverse:var(--color-paper);        /* text on Ink */
+
+  --border:       var(--ink-12);
+  --border-strong:var(--ink-20);
+  --focus-ring:   var(--color-mountain);
+
+  /* =========================================================================
+     TYPE FAMILIES
+     ========================================================================= */
+  --font-display: "Söhne", "Manrope", system-ui, sans-serif;
+  --font-alt:     "Manrope", "Söhne", system-ui, sans-serif;
+  --font-text:    "Lora", "Iowan Old Style", "Georgia", serif;
+  --font-ui:      "Söhne", "Manrope", system-ui, sans-serif;
+  --font-mono:    ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* =========================================================================
+     TYPE SCALE — from Typography.pdf
+     Each step: size / line-height / tracking
+     Naming convention: display > h1 > h2 > h3 > subhead > body > caption > small
+     ========================================================================= */
+  --fs-display:   49px;  --lh-display: 1.1;  --tr-display: -0.015em;
+  --fs-h1:        39px;  --lh-h1:      1.2;  --tr-h1:      -0.010em;
+  --fs-h2:        32px;  --lh-h2:      1.25; --tr-h2:      -0.0075em;
+  --fs-h3:        25px;  --lh-h3:      1.3;  --tr-h3:      -0.005em;
+  --fs-subhead:   20px;  --lh-subhead: 1.4;  --tr-subhead: -0.002em;
+  --fs-body:      16px;  --lh-body:    1.4;  --tr-body:     0em;
+  --fs-caption:   13px;  --lh-caption: 1.4;  --tr-caption:  0.005em;
+  --fs-small:     10px;  --lh-small:   1.4;  --tr-small:    0.010em;
+
+  /* =========================================================================
+     SPACING — 4 px base step. Use these instead of arbitrary px.
+     ========================================================================= */
+  --space-0:  0;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* =========================================================================
+     RADII — geometric, mostly small. Logo mark itself is hard-edged.
+     ========================================================================= */
+  --radius-xs:  2px;
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  12px;
+  --radius-xl:  20px;
+  --radius-pill: 999px;
+
+  /* =========================================================================
+     SHADOW / ELEVATION — restrained. Cards mostly rely on Paper→white contrast.
+     ========================================================================= */
+  --shadow-1: 0 1px 2px rgb(28 28 30 / .04), 0 1px 1px rgb(28 28 30 / .03);
+  --shadow-2: 0 4px 12px rgb(28 28 30 / .06), 0 1px 2px rgb(28 28 30 / .04);
+  --shadow-3: 0 12px 32px rgb(28 28 30 / .10), 0 2px 6px rgb(28 28 30 / .06);
+  --shadow-focus: 0 0 0 3px rgb(25 10 219 / .25);
+
+  /* =========================================================================
+     MOTION
+     ========================================================================= */
+  --ease-out: cubic-bezier(.2, .8, .2, 1);
+  --ease-in:  cubic-bezier(.4, 0, 1, 1);
+  --dur-quick: 120ms;
+  --dur-base:  200ms;
+  --dur-slow:  360ms;
+}
+
+/* ---------------------------------------------------------------------------
+   SEMANTIC TYPE CLASSES — apply these to elements instead of restating sizes.
+   --------------------------------------------------------------------------- */
+.t-display, h1.lbh-display {
+  font-family: var(--font-display);
+  font-weight: 700; /* Söhne Halbfett */
+  font-size: var(--fs-display);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tr-display);
+  color: var(--fg);
+}
+.t-h1, h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+  letter-spacing: var(--tr-h1);
+  color: var(--fg);
+}
+.t-h2, h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+  letter-spacing: var(--tr-h2);
+  color: var(--fg);
+}
+.t-h3, h3 {
+  font-family: var(--font-display);
+  font-weight: 500; /* Söhne Kräftig */
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+  letter-spacing: var(--tr-h3);
+  color: var(--fg);
+}
+.t-subhead {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--fs-subhead);
+  line-height: var(--lh-subhead);
+  letter-spacing: var(--tr-subhead);
+  color: var(--fg);
+}
+.t-subhead-alt {
+  font-family: var(--font-alt);
+  font-weight: 600; /* Manrope SemiBold */
+  font-size: var(--fs-subhead);
+  line-height: var(--lh-subhead);
+  letter-spacing: var(--tr-subhead);
+  color: var(--fg);
+}
+
+/* Body / paragraphs — Lora is the default text face for long-form reading. */
+.t-body, p {
+  font-family: var(--font-text);
+  font-weight: 400; /* Lora Regular */
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--fg);
+}
+.t-body-strong {
+  font-family: var(--font-text);
+  font-weight: 600; /* Lora SemiBold */
+}
+
+/* UI labels, buttons, captions — Söhne (sans), not the body serif. */
+.t-ui {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: var(--fs-body);
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+.t-caption {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  letter-spacing: var(--tr-caption);
+  color: var(--fg-muted);
+}
+.t-small {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: var(--fs-small);
+  line-height: var(--lh-small);
+  letter-spacing: var(--tr-small);
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+/* Headlines-Alt (Manrope) — used when Söhne feels too heavy, e.g. UI titles */
+.t-h1-alt { font-family: var(--font-alt); font-weight: 700; font-size: var(--fs-h1); line-height: var(--lh-h1); letter-spacing: var(--tr-h1); }
+.t-h2-alt { font-family: var(--font-alt); font-weight: 700; font-size: var(--fs-h2); line-height: var(--lh-h2); letter-spacing: var(--tr-h2); }
+.t-h3-alt { font-family: var(--font-alt); font-weight: 600; font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: var(--tr-h3); }
+
+/* ---------------------------------------------------------------------------
+   BASELINE RESET (optional — include before component CSS)
+   --------------------------------------------------------------------------- */
+.lbh-baseline {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-text);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.lbh-baseline a { color: var(--color-mountain); text-decoration: underline; text-underline-offset: 2px; }
+.lbh-baseline a:hover { text-decoration-thickness: 2px; }

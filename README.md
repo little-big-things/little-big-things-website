@@ -1,67 +1,81 @@
-# EmDash Blog Template (Cloudflare)
+# Little Big Things — littlebigthings.co
 
-A clean, minimal blog built with [EmDash](https://github.com/emdash-cms/emdash) and deployed on Cloudflare Workers with D1 and R2.
+EmDash/Astro website for Little Big Things, the consulting, investing, and freelance practice of Tim & Christina Frazer.
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/emdash-cms/templates/tree/main/blog-cloudflare)
+This repo started from the `little-big-things/little-big-things-website` EmDash Cloudflare template and now uses the supplied `Little Big Things.html` design handoff as the production homepage.
 
-![Blog template homepage](https://raw.githubusercontent.com/emdash-cms/emdash/main/assets/templates/blog/latest/homepage-light-desktop.jpg)
+## What is included
 
-## What's Included
+- Custom marketing homepage at `/` based on the design handoff.
+- EmDash admin UI at `/_emdash/admin`.
+- Blog/content routes from the source EmDash template:
+  - `/posts`
+  - `/posts/:slug`
+  - `/category/:slug`
+  - `/tag/:slug`
+  - `/search`
+  - `/pages/:slug`
+  - `/rss.xml`
+- Cloudflare Workers deployment with D1 and R2 bindings.
+- Forms plugin and webhook notifier dependencies from the source template.
 
-- Featured post hero on the homepage
-- Post archive with reading time estimates
-- Category and tag archives
-- Full-text search
-- RSS feed
-- SEO metadata and JSON-LD
-- Dark/light mode
-- Forms plugin and webhook notifier
+## Design handoff
 
-## Pages
+Fetched design files are kept in:
 
-| Page | Route |
-|---|---|
-| Homepage | `/` |
-| All posts | `/posts` |
-| Single post | `/posts/:slug` |
-| Category archive | `/category/:slug` |
-| Tag archive | `/tag/:slug` |
-| Search | `/search` |
-| Static pages | `/pages/:slug` |
-| 404 | fallback |
+```text
+design-handoff/
+├── README.md
+└── Little Big Things.html
+```
 
-## Screenshots
+The implemented homepage uses:
 
-| | Desktop | Mobile |
-|---|---|---|
-| Light | ![homepage light desktop](https://raw.githubusercontent.com/emdash-cms/emdash/main/assets/templates/blog/latest/homepage-light-desktop.jpg) | ![homepage light mobile](https://raw.githubusercontent.com/emdash-cms/emdash/main/assets/templates/blog/latest/homepage-light-mobile.jpg) |
-| Dark | ![homepage dark desktop](https://raw.githubusercontent.com/emdash-cms/emdash/main/assets/templates/blog/latest/homepage-dark-desktop.jpg) | ![homepage dark mobile](https://raw.githubusercontent.com/emdash-cms/emdash/main/assets/templates/blog/latest/homepage-dark-mobile.jpg) |
+```text
+src/pages/index.astro
+src/layouts/MarketingLayout.astro
+src/styles/lbt-colors.css
+src/styles/lbt-page.css
+public/assets/
+public/fonts/
+```
 
-## Infrastructure
+The original design readme described a static no-build site under `site/`. This repo instead serves the same design inside the EmDash/Astro app so the site can keep the CMS/admin surface.
 
-- **Runtime:** Cloudflare Workers
-- **Database:** D1
-- **Storage:** R2
-- **Framework:** Astro with `@astrojs/cloudflare`
+## Local development
 
-## Local Development
+Use Node.js 22.13+; pnpm 11 requires the newer `node:sqlite` built-in.
 
 ```bash
 pnpm install
-pnpm bootstrap
 pnpm dev
 ```
 
-## Deploying
+If your shell resolves an older Node shim first, put Homebrew's Node on PATH before running pnpm:
+
+```bash
+export PATH=/opt/homebrew/bin:/opt/homebrew/sbin:$PATH
+npm exec --yes pnpm@11.1.3 -- install
+npm exec --yes pnpm@11.1.3 -- dev
+```
+
+Open `http://localhost:4321`.
+
+## Verification
+
+```bash
+pnpm typecheck
+pnpm build
+```
+
+Both commands should complete with 0 Astro diagnostics. Build output is written to `dist/`.
+
+## Deployment
+
+Cloudflare deployment uses the existing script:
 
 ```bash
 pnpm deploy
 ```
 
-Or click the deploy button above to set up the project in your Cloudflare account.
-
-## See Also
-
-- [Node.js variant](../blog) -- same template using SQLite and local file storage
-- [All templates](../)
-- [EmDash documentation](https://github.com/emdash-cms/emdash/tree/main/docs)
+Required Cloudflare bindings are defined in `wrangler.jsonc` and the EmDash integration in `astro.config.mjs`.

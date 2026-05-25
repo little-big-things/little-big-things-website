@@ -1,0 +1,49 @@
+---
+import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
+import { createPublicPageContext } from "emdash/page";
+import "../styles/lbt-colors.css";
+import "../styles/lbt-page.css";
+
+interface Props {
+	title: string;
+	description?: string;
+}
+
+const { title, description } = Astro.props;
+const pageCtx = createPublicPageContext({
+	Astro,
+	kind: "custom",
+	pageType: "website",
+	title,
+	pageTitle: title,
+	description,
+	canonical: "https://littlebigthings.co/",
+	image: "https://littlebigthings.co/og-image.png",
+	seo: { ogImage: "https://littlebigthings.co/og-image.png" },
+	siteName: "Little Big Things",
+});
+---
+
+<!doctype html>
+<html lang="en" data-theme="paper">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#190ADB" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href="https://littlebigthings.co/" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="alternate icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet" />
+		<EmDashHead page={pageCtx} />
+	</head>
+	<body class="lbh-baseline">
+		<EmDashBodyStart page={pageCtx} />
+		<slot />
+		<EmDashBodyEnd page={pageCtx} />
+	</body>
+</html>

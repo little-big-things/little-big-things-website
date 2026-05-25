@@ -1,0 +1,10 @@
+# Cloudflare Pages redirects
+# https://developers.cloudflare.com/pages/configuration/redirects/
+
+# Apex / www handled by Cloudflare DNS — no app-side redirect needed.
+# Add explicit redirects here as the site grows.
+
+# Legacy paths (placeholders — uncomment when needed)
+# /about      /#about    301
+# /services   /#services 301
+# /podcast    https://littlebighumans.co  301
