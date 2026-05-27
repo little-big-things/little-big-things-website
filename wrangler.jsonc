@@ -22,6 +22,12 @@
 			"id": "d362b5c65a9240548f05d4561644b4d2",
 		},
 	],
+	"send_email": [
+		{
+			"name": "EMAIL",
+			"allowed_sender_addresses": ["no-reply@littlebigthings.co"],
+		},
+	],
 	// Worker Loader for plugin sandboxing
 	"worker_loaders": [
 		{
