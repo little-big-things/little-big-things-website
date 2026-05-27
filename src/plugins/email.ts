@@ -35,7 +35,7 @@ export function emailPlugin(): PluginDescriptor {
  *
  * 3,000 emails/month included on Workers Paid plan — no API key needed.
  */
-export default function createPlugin() {
+export function createPlugin() {
 	return definePlugin({
 		id: "lbt-email-cloudflare",
 		version: "1.0.0",
