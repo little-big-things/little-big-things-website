@@ -3,7 +3,7 @@ import react from "@astrojs/react";
 import { d1, r2, sandbox } from "@emdash-cms/cloudflare";
 import { formsPlugin } from "@emdash-cms/plugin-forms";
 import webhookNotifier from "@emdash-cms/plugin-webhook-notifier";
-import { emailPlugin } from "./src/plugins/email.ts";
+import { emailPlugin } from "./src/plugins/email";
 import { defineConfig, fontProviders } from "astro/config";
 import emdash from "emdash/astro";
 

@@ -1,4 +1,5 @@
 import { definePlugin } from "emdash";
+import type { PluginDescriptor } from "emdash";
 
 interface SendEmail {
 	send(message: {
@@ -11,21 +12,33 @@ interface SendEmail {
 }
 
 /**
- * Email transport plugin using the Cloudflare Email Service native binding.
- *
- * Requires:
- * 1. Domain verified in Cloudflare Email Service dashboard
- * 2. The `send_email` binding in wrangler.jsonc (already added)
- *
- * No third-party API keys needed — uses Cloudflare's own email infrastructure.
- * 3,000 emails/month included on Workers Paid plan.
+ * Descriptor factory — called at build time in astro.config.mjs.
+ * Points back at this same file as the runtime entrypoint.
  */
-export function emailPlugin() {
+export function emailPlugin(): PluginDescriptor {
+	return {
+		id: "lbt-email-cloudflare",
+		version: "1.0.0",
+		format: "native",
+		entrypoint: import.meta.url,
+		capabilities: ["hooks.email-transport:register"],
+	};
+}
+
+/**
+ * Plugin implementation — EmDash imports this file at runtime and calls
+ * the default export to get the resolved plugin.
+ *
+ * Uses the Cloudflare Email Service native Workers binding (EMAIL).
+ * Requires the send_email binding in wrangler.jsonc and the domain
+ * verified in Cloudflare Email Service.
+ *
+ * 3,000 emails/month included on Workers Paid plan — no API key needed.
+ */
+export default function createPlugin() {
 	return definePlugin({
 		id: "lbt-email-cloudflare",
 		version: "1.0.0",
-		name: "Email (Cloudflare Email Service)",
-		description: "Transactional email via Cloudflare Email Service for magic links and invites.",
 		capabilities: ["hooks.email-transport:register"],
 		hooks: {
 			"email:deliver": {
