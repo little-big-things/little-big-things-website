@@ -26,6 +26,7 @@ export function emailPlugin() {
 		version: "1.0.0",
 		name: "Email (Cloudflare Email Service)",
 		description: "Transactional email via Cloudflare Email Service for magic links and invites.",
+		capabilities: ["hooks.email-transport:register"],
 		hooks: {
 			"email:deliver": {
 				exclusive: true,
