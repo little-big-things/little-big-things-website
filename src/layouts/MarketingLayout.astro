@@ -1,6 +1,7 @@
 ---
 import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
+import { getSiteSettings } from "emdash";
 import "../styles/lbt-colors.css";
 import "../styles/lbt-page.css";
 
@@ -17,6 +18,10 @@ const {
 	canonical = "https://littlebigthings.co/",
 	image = "https://littlebigthings.co/og-image.png",
 } = Astro.props;
+
+const settings = await getSiteSettings();
+const siteTitle = settings?.title ?? "Little Big Things";
+
 const pageCtx = createPublicPageContext({
 	Astro,
 	kind: "custom",
@@ -27,7 +32,7 @@ const pageCtx = createPublicPageContext({
 	canonical,
 	image,
 	seo: { ogImage: image },
-	siteName: "Little Big Things",
+	siteName: siteTitle,
 });
 ---
 

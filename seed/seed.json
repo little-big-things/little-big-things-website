@@ -2,13 +2,13 @@
 	"$schema": "https://emdashcms.com/seed.schema.json",
 	"version": "1",
 	"meta": {
-		"name": "Blog Starter",
-		"description": "A blog with posts and pages",
-		"author": "EmDash"
+		"name": "Little Big Things",
+		"description": "Consulting, investing, and freelance practice of Tim & Christina Frazer",
+		"author": "Tim & Christina Frazer"
 	},
 	"settings": {
-		"title": "My Blog",
-		"tagline": "Thoughts on building for the web"
+		"title": "Little Big Things",
+		"tagline": "Consulting, investing, and freelance work across AI, data, and software engineering — Tim & Christina Frazer."
 	},
 	"collections": [
 		{
@@ -61,6 +61,118 @@
 					"label": "Content",
 					"type": "portableText",
 					"searchable": true
+				},
+				{
+					"slug": "metadata",
+					"label": "Metadata",
+					"type": "json"
+				}
+			]
+		},
+		{
+			"slug": "services",
+			"label": "Services",
+			"labelSingular": "Service",
+			"supports": ["drafts", "revisions"],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "subtitle",
+					"label": "Subtitle",
+					"type": "string"
+				},
+				{
+					"slug": "description",
+					"label": "Description",
+					"type": "portableText"
+				},
+				{
+					"slug": "duration",
+					"label": "Duration",
+					"type": "string"
+				},
+				{
+					"slug": "scope",
+					"label": "Scope",
+					"type": "string"
+				},
+				{
+					"slug": "order",
+					"label": "Order",
+					"type": "integer"
+				}
+			]
+		},
+		{
+			"slug": "team_members",
+			"label": "Team Members",
+			"labelSingular": "Team Member",
+			"supports": ["drafts", "revisions"],
+			"fields": [
+				{
+					"slug": "name",
+					"label": "Name",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "role",
+					"label": "Role",
+					"type": "string"
+				},
+				{
+					"slug": "bio",
+					"label": "Bio",
+					"type": "portableText"
+				},
+				{
+					"slug": "photo",
+					"label": "Photo",
+					"type": "image"
+				},
+				{
+					"slug": "tags",
+					"label": "Tags",
+					"type": "json"
+				},
+				{
+					"slug": "order",
+					"label": "Order",
+					"type": "integer"
+				}
+			]
+		},
+		{
+			"slug": "focus_areas",
+			"label": "Focus Areas",
+			"labelSingular": "Focus Area",
+			"supports": ["drafts", "revisions"],
+			"fields": [
+				{
+					"slug": "name",
+					"label": "Name",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "description",
+					"label": "Description",
+					"type": "text"
+				},
+				{
+					"slug": "tags",
+					"label": "Tags",
+					"type": "json"
+				},
+				{
+					"slug": "order",
+					"label": "Order",
+					"type": "integer"
 				}
 			]
 		}
@@ -115,15 +227,14 @@
 	],
 	"bylines": [
 		{
-			"id": "byline-editorial",
-			"slug": "emdash-editorial",
-			"displayName": "EmDash Editorial"
+			"id": "byline-tim",
+			"slug": "tim-frazer",
+			"displayName": "Tim Frazer"
 		},
 		{
-			"id": "byline-guest",
-			"slug": "guest-contributor",
-			"displayName": "Guest Contributor",
-			"isGuest": true
+			"id": "byline-christina",
+			"slug": "christina-frazer",
+			"displayName": "Christina Frazer"
 		}
 	],
 	"menus": [
@@ -133,17 +244,17 @@
 			"items": [
 				{
 					"type": "custom",
-					"label": "Home",
-					"url": "/"
+					"label": "Services",
+					"url": "/#services"
 				},
 				{
 					"type": "custom",
 					"label": "About",
-					"url": "/pages/about"
+					"url": "/#about"
 				},
 				{
 					"type": "custom",
-					"label": "Posts",
+					"label": "Writing",
 					"url": "/posts"
 				}
 			]
@@ -205,7 +316,7 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "A blog about software, design, and the occasional stray thought.",
+									"text": "Consulting, investing, and freelance work across AI, data, and software engineering.",
 									"_key": "k1"
 								}
 							],
@@ -249,31 +360,32 @@
 					"_key": "k2"
 				}
 			]
-		},
-		{
-			"slug": "about-author",
-			"title": "About the Author",
-			"description": "Brief author bio for use in posts or pages",
-			"keywords": ["author", "bio", "about"],
-			"source": "theme",
-			"content": [
-				{
-					"_type": "block",
-					"style": "normal",
-					"children": [
-						{
-							"_type": "span",
-							"text": "A software developer who writes about building things on the web. Based somewhere with good coffee and reliable internet.",
-							"_key": "k1"
-						}
-					],
-					"_key": "k0"
-				}
-			]
 		}
 	],
 	"content": {
 		"pages": [
+			{
+				"id": "home",
+				"slug": "home",
+				"status": "published",
+				"data": {
+					"title": "Home",
+					"content": [],
+					"metadata": {
+						"hero_lede": "Tim & Christina Frazer run a consulting, investing, and freelance practice across AI, data, and software engineering — from a household where the same operating principle applies to a Series A roadmap and a bedtime routine.",
+						"hero_eyebrow": "EST 2017 · A small practice in big things",
+						"availability_note": "Booking consulting engagements for Q3 2026. Two freelance slots open in August.",
+						"calendar_url": "https://calendar.notion.so/meet/timfrazer/knnbg4p9z",
+						"locations": "Philadelphia · Vancouver · London · New York",
+						"locations_note": "Home base in Philadelphia. We hold a company in Vancouver and run engagements out of London and New York.",
+						"founding_year": "2017",
+						"podcast_url": "https://littlebighumans.co",
+						"podcast_name": "Little Big Humans",
+						"podcast_description": "Every week Tim & Christina sit down to talk through whatever they're currently figuring out as parents — sleep, illness, sibling dynamics — with the research that does (and doesn't) back it. Honest, hedged, citing studies, no hot takes.",
+						"selected_work": "Trust & Will · Amazon Web Services · Thrive Global · Bonobos / Walmart · Vanguard Charitable · Joopiter · Molecular You · PAI Health · The Lancet · BrainStation"
+					}
+				}
+			},
 			{
 				"id": "about",
 				"slug": "about",
@@ -287,7 +399,7 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "A place for writing about software, design, and the occasional stray thought. No posting schedule, no newsletter funnel. Just things I wanted to write down.",
+									"text": "Little Big Things is the consulting, investing, and freelance practice of Tim & Christina Frazer — focused work across data, AI engineering, and analytics.",
 									"_key": "k1"
 								}
 							],
@@ -299,13 +411,295 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Built with Astro and EmDash. The source is open if you want to see how it works.",
+									"text": "We keep the practice small on purpose, because targeted, specific work produces outsized impact.",
 									"_key": "k3"
 								}
 							],
 							"_key": "k2"
 						}
 					]
+				}
+			}
+		],
+		"services": [
+			{
+				"id": "consulting",
+				"slug": "consulting",
+				"status": "published",
+				"data": {
+					"title": "Consulting",
+					"subtitle": "For the team about to commit a year to it",
+					"description": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "We come in for the planning quarter, not the rebuild. Data strategy, AI strategy, and the business-development & marketing scaffolding that makes either one land. Output is a defensible plan, a working prototype, and the language your exec team will actually use in the next board meeting.",
+									"_key": "k1"
+								}
+							],
+							"_key": "k0"
+						}
+					],
+					"duration": "4–12 weeks",
+					"scope": "Fractional or fixed scope",
+					"order": 1
+				}
+			},
+			{
+				"id": "investing",
+				"slug": "investing",
+				"status": "published",
+				"data": {
+					"title": "Investing",
+					"subtitle": "Where we'd have taken the meeting anyway",
+					"description": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "We write small checks into pre-seed and seed-stage companies building in our circle — AI infrastructure, vertical AI for under-served industries, and developer tooling. We invest where we can be useful for more than the cheque: intros, hiring loops, technical review.",
+									"_key": "k1"
+								}
+							],
+							"_key": "k0"
+						}
+					],
+					"duration": "$25k–$100k",
+					"scope": "Pre-seed / seed only",
+					"order": 2
+				}
+			},
+			{
+				"id": "freelance",
+				"slug": "freelance",
+				"status": "published",
+				"data": {
+					"title": "Freelance",
+					"subtitle": "Strategy, analytics, and the engineering that holds them up",
+					"description": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "The build that doesn't fit a full hire. Data foundations — warehouses, pipelines, modelling. Analytics that an exec team will actually open. Systems improvement on what's already shipped. We lead with our own hands, bring in trusted collaborators when the work calls for them, and ship code with the runbook to match.",
+									"_key": "k1"
+								}
+							],
+							"_key": "k0"
+						}
+					],
+					"duration": "2–8 weeks",
+					"scope": "Fixed-scope sprints",
+					"order": 3
+				}
+			}
+		],
+		"team_members": [
+			{
+				"id": "tim-frazer",
+				"slug": "tim-frazer",
+				"status": "published",
+				"data": {
+					"name": "Tim Frazer",
+					"role": "Co-founder · Data, data engineering, analytics & AI engineering",
+					"bio": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Self-taught engineer turned multi-time Director of Data Engineering. Currently at ",
+									"_key": "k1"
+								},
+								{
+									"_type": "span",
+									"marks": ["strong"],
+									"text": "Trust & Will",
+									"_key": "k2"
+								},
+								{
+									"_type": "span",
+									"text": ", previously running data & analytics at ",
+									"_key": "k3"
+								},
+								{
+									"_type": "span",
+									"marks": ["strong"],
+									"text": "Thrive Global",
+									"_key": "k4"
+								},
+								{
+									"_type": "span",
+									"text": " (Arianna Huffington's company) and a senior engineer at ",
+									"_key": "k5"
+								},
+								{
+									"_type": "span",
+									"marks": ["strong"],
+									"text": "Bonobos",
+									"_key": "k6"
+								},
+								{
+									"_type": "span",
+									"text": " through the Walmart acquisition.",
+									"_key": "k7"
+								}
+							],
+							"_key": "k0"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Teaches data & Python at ",
+									"_key": "k9"
+								},
+								{
+									"_type": "span",
+									"marks": ["strong"],
+									"text": "BrainStation",
+									"_key": "k10"
+								},
+								{
+									"_type": "span",
+									"text": " in New York, mentors data engineers through ADPList and Plato. Does the technical due diligence on every investment we write.",
+									"_key": "k11"
+								}
+							],
+							"_key": "k8"
+						}
+					],
+					"photo": {
+						"$media": {
+							"url": "https://littlebigthings.co/assets/photo-tim-christina-wide.jpeg",
+							"alt": "Tim and Christina Frazer",
+							"filename": "photo-tim-christina-wide.jpeg"
+						}
+					},
+					"tags": ["Data engineering", "AI strategy", "Technical DD"],
+					"order": 1
+				}
+			},
+			{
+				"id": "christina-frazer",
+				"slug": "christina-frazer",
+				"status": "published",
+				"data": {
+					"name": "Christina Frazer",
+					"role": "Co-founder · Systems, ML & research",
+					"bio": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "System Development Engineer at ",
+									"_key": "k1"
+								},
+								{
+									"_type": "span",
+									"marks": ["strong"],
+									"text": "Amazon Web Services",
+									"_key": "k2"
+								},
+								{
+									"_type": "span",
+									"text": ". PhD in Neurobiology from ",
+									"_key": "k3"
+								},
+								{
+									"_type": "span",
+									"marks": ["strong"],
+									"text": "King's College London",
+									"_key": "k4"
+								},
+								{
+									"_type": "span",
+									"text": ", with a fellowship at Tohoku University on stroke imaging. JSPS Summer Fellow, George Brownlee Award.",
+									"_key": "k5"
+								}
+							],
+							"_key": "k0"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Before AWS, launched and ran ",
+									"_key": "k7"
+								},
+								{
+									"_type": "span",
+									"marks": ["strong"],
+									"text": "The Lancet Digital Health",
+									"_key": "k8"
+								},
+								{
+									"_type": "span",
+									"text": " as a senior editor — the journal that ranked first in medical informatics in its first year of publication. Brings the research rigour to every engagement that touches health, life sciences, or evaluation methodology.",
+									"_key": "k9"
+								}
+							],
+							"_key": "k6"
+						}
+					],
+					"photo": {
+						"$media": {
+							"url": "https://littlebigthings.co/assets/photo-christina.jpeg",
+							"alt": "Christina Frazer, Brooklyn 2020.",
+							"filename": "photo-christina.jpeg"
+						}
+					},
+					"tags": ["Systems engineering", "Machine learning", "Research methods", "Digital health"],
+					"order": 2
+				}
+			}
+		],
+		"focus_areas": [
+			{
+				"id": "ai",
+				"slug": "ai",
+				"status": "published",
+				"data": {
+					"name": "AI",
+					"description": "Picking what to build, what to buy, and what to leave alone for another quarter. Strategy first, evals second, demos last.",
+					"tags": ["AI strategy", "Evaluation", "Agent design", "RAG & retrieval"],
+					"order": 1
+				}
+			},
+			{
+				"id": "data",
+				"slug": "data",
+				"status": "published",
+				"data": {
+					"name": "Data",
+					"description": "The unglamorous half. Models, pipelines, warehousing, and the governance that lets a team trust its own dashboards again.",
+					"tags": ["Data strategy", "Warehousing", "Pipelines", "Modelling"],
+					"order": 2
+				}
+			},
+			{
+				"id": "software-engineering",
+				"slug": "software-engineering",
+				"status": "published",
+				"data": {
+					"name": "Software Engineering",
+					"description": "Where the strategy meets shipped product. Backends, internal tools, and the small surfaces customers actually touch.",
+					"tags": ["TypeScript", "Python", "Postgres", "Internal tools"],
+					"order": 3
 				}
 			}
 		],
@@ -401,11 +795,7 @@
 				},
 				"bylines": [
 					{
-						"byline": "byline-editorial"
-					},
-					{
-						"byline": "byline-guest",
-						"roleLabel": "Guest essay"
+						"byline": "byline-tim"
 					}
 				],
 				"taxonomies": {
@@ -492,7 +882,7 @@
 				},
 				"bylines": [
 					{
-						"byline": "byline-editorial"
+						"byline": "byline-tim"
 					}
 				],
 				"taxonomies": {

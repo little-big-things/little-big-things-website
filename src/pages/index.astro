@@ -1,5 +1,32 @@
 ---
 import MarketingLayout from "../layouts/MarketingLayout.astro";
+import { getEmDashCollection, getEmDashEntry, getSiteSettings } from "emdash";
+import { PortableText } from "emdash/ui";
+
+// Fetch all the data we need in parallel
+const [
+  { entry: homePage, cacheHint: homeHint },
+  { entries: services, cacheHint: servicesHint },
+  { entries: teamMembers, cacheHint: teamHint },
+  { entries: focusAreas, cacheHint: focusHint },
+  settings,
+] = await Promise.all([
+  getEmDashEntry("pages", "home"),
+  getEmDashCollection("services", { orderBy: { order: "asc" } }),
+  getEmDashCollection("team_members", { orderBy: { order: "asc" } }),
+  getEmDashCollection("focus_areas", { orderBy: { order: "asc" } }),
+  getSiteSettings(),
+]);
+
+if (Astro.cache?.enabled) {
+  Astro.cache.set(homeHint);
+  Astro.cache.set(servicesHint);
+  Astro.cache.set(teamHint);
+  Astro.cache.set(focusHint);
+}
+
+const meta = (homePage?.data?.metadata ?? {}) as Record<string, string>;
+const calendarUrl = meta.calendar_url ?? "https://calendar.notion.so/meet/timfrazer/knnbg4p9z";
 ---
 
 <MarketingLayout
@@ -33,7 +60,7 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
         <a href="#about" class="lk-hide-sm">About</a>
         <a href="#podcast">Podcast</a>
         <span class="sep" aria-hidden="true"></span>
-        <a class="btn btn-primary" href="https://calendar.notion.so/meet/timfrazer/knnbg4p9z" style="color: rgb(255, 250, 248)">Book a call <span class="arrow">→</span></a>
+        <a class="btn btn-primary" href={calendarUrl} style="color: rgb(255, 250, 248)">Book a call <span class="arrow">→</span></a>
       </div>
     </div>
   </nav>
@@ -56,11 +83,11 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
         </h1>
 
         <p class="hero-lede">
-          <strong>Tim &amp; Christina Frazer</strong> run a consulting, investing, and freelance practice across AI, data, and software engineering &mdash; from a household where the same operating principle applies to a Series&nbsp;A roadmap and a bedtime routine.
+          <strong>Tim &amp; Christina Frazer</strong> {meta.hero_lede ?? "run a consulting, investing, and freelance practice across AI, data, and software engineering — from a household where the same operating principle applies to a Series\u00A0A roadmap and a bedtime routine."}
         </p>
 
         <div class="hero-ctas">
-          <a class="btn btn-primary btn-lg" href="https://calendar.notion.so/meet/timfrazer/knnbg4p9z" style="color: rgb(255, 250, 248)">Book a call <span class="arrow">→</span></a>
+          <a class="btn btn-primary btn-lg" href={calendarUrl} style="color: rgb(255, 250, 248)">Book a call <span class="arrow">→</span></a>
           <a class="btn btn-ghost btn-lg" href="#podcast">Hear the podcast</a>
         </div>
       </div>
@@ -99,32 +126,16 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
       </header>
 
       <div class="stack">
-        <article class="stack-row">
-          <div class="stack-num">01 / Consulting</div>
-          <h3 class="stack-h">Data &amp; AI strategy<small>For the team about to commit a year to it</small></h3>
-          <div class="stack-body">
-            <p>We come in for the planning quarter, not the rebuild. Data strategy, AI strategy, and the business-development &amp; marketing scaffolding that makes either one land. Output is a defensible plan, a working prototype, and the language your exec team will actually use in the next board meeting.</p>
-          </div>
-          <div class="stack-meta"><b>4&ndash;12 weeks</b>Fractional or fixed scope</div>
-        </article>
-
-        <article class="stack-row">
-          <div class="stack-num">02 / Investing</div>
-          <h3 class="stack-h">Early-stage checks<small>Where we&rsquo;d have taken the meeting anyway</small></h3>
-          <div class="stack-body">
-            <p>We write small checks into pre-seed and seed-stage companies building in our circle &mdash; AI infrastructure, vertical AI for under-served industries, and developer tooling. We invest where we can be useful for more than the cheque: intros, hiring loops, technical review.</p>
-          </div>
-          <div class="stack-meta"><b>$25k&ndash;$100k</b>Pre-seed / seed only</div>
-        </article>
-
-        <article class="stack-row">
-          <div class="stack-num">03 / Freelance</div>
-          <h3 class="stack-h">Data foundations &amp; systems<small>Strategy, analytics, and the engineering that holds them up</small></h3>
-          <div class="stack-body">
-            <p>The build that doesn&rsquo;t fit a full hire. Data foundations &mdash; warehouses, pipelines, modelling. Analytics that an exec team will actually open. Systems improvement on what&rsquo;s already shipped. We lead with our own hands, bring in trusted collaborators when the work calls for them, and ship code with the runbook to match.</p>
-          </div>
-          <div class="stack-meta"><b>2&ndash;8 weeks</b>Fixed-scope sprints</div>
-        </article>
+        {services.map((service, i) => (
+          <article class="stack-row">
+            <div class="stack-num">0{i + 1} / {service.data.title}</div>
+            <h3 class="stack-h">{service.data.title}<small>{service.data.subtitle}</small></h3>
+            <div class="stack-body">
+              <PortableText value={service.data.description} />
+            </div>
+            <div class="stack-meta"><b>{service.data.duration}</b>{service.data.scope}</div>
+          </article>
+        ))}
       </div>
     </div>
   </section>
@@ -143,41 +154,18 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
       </header>
 
       <div class="focus-grid">
-        <article class="focus-cell">
-          <div class="focus-bars" aria-hidden="true"><span></span><span></span><span></span></div>
-          <h3 class="focus-name">AI</h3>
-          <p>Picking what to build, what to buy, and what to leave alone for another quarter. Strategy first, evals second, demos last.</p>
-          <div class="focus-tags">
-            <span class="focus-tag">AI strategy</span>
-            <span class="focus-tag">Evaluation</span>
-            <span class="focus-tag">Agent design</span>
-            <span class="focus-tag">RAG &amp; retrieval</span>
-          </div>
-        </article>
-
-        <article class="focus-cell">
-          <div class="focus-bars" aria-hidden="true"><span></span><span></span><span></span></div>
-          <h3 class="focus-name">Data</h3>
-          <p>The unglamorous half. Models, pipelines, warehousing, and the governance that lets a team trust its own dashboards again.</p>
-          <div class="focus-tags">
-            <span class="focus-tag">Data strategy</span>
-            <span class="focus-tag">Warehousing</span>
-            <span class="focus-tag">Pipelines</span>
-            <span class="focus-tag">Modelling</span>
-          </div>
-        </article>
-
-        <article class="focus-cell">
-          <div class="focus-bars" aria-hidden="true"><span></span><span></span><span></span></div>
-          <h3 class="focus-name">Software engineering</h3>
-          <p>Where the strategy meets shipped product. Backends, internal tools, and the small surfaces customers actually touch.</p>
-          <div class="focus-tags">
-            <span class="focus-tag">TypeScript</span>
-            <span class="focus-tag">Python</span>
-            <span class="focus-tag">Postgres</span>
-            <span class="focus-tag">Internal tools</span>
-          </div>
-        </article>
+        {focusAreas.map((area) => (
+          <article class="focus-cell">
+            <div class="focus-bars" aria-hidden="true"><span></span><span></span><span></span></div>
+            <h3 class="focus-name">{area.data.name}</h3>
+            <p>{area.data.description}</p>
+            <div class="focus-tags">
+              {(area.data.tags as string[]).map(tag => (
+                <span class="focus-tag">{tag}</span>
+              ))}
+            </div>
+          </article>
+        ))}
       </div>
     </div>
   </section>
@@ -201,25 +189,16 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
           <figcaption class="ptag">Christina &middot; Brooklyn, 2020</figcaption>
         </figure>
 
-        <article class="about-card">
-          <div class="role">Co-founder &middot; Data, data engineering, analytics &amp; AI engineering</div>
-          <h3 class="name">Tim Frazer</h3>
-          <p>Self-taught engineer turned multi-time Director of Data Engineering. Currently at <strong>Trust &amp; Will</strong>, previously running data &amp; analytics at <strong>Thrive Global</strong> (Arianna Huffington&rsquo;s company) and a senior engineer at <strong>Bonobos</strong> through the Walmart acquisition.</p>
-          <p>Teaches data &amp; Python at <strong>BrainStation</strong> in New York, mentors data engineers through ADPList and Plato. Does the technical due diligence on every investment we write.</p>
-          <div class="tags">
-            <span>Data engineering</span><span>AI strategy</span><span>Technical DD</span>
-          </div>
-        </article>
-
-        <article class="about-card">
-          <div class="role">Co-founder &middot; Systems, ML &amp; research</div>
-          <h3 class="name">Christina Frazer</h3>
-          <p>System Development Engineer at <strong>Amazon Web Services</strong>. PhD in Neurobiology from <strong>King&rsquo;s College London</strong>, with a fellowship at Tohoku University on stroke imaging. JSPS Summer Fellow, George Brownlee Award.</p>
-          <p>Before AWS, launched and ran <strong>The Lancet Digital Health</strong> as a senior editor &mdash; the journal that ranked first in medical informatics in its first year of publication. Brings the research rigour to every engagement that touches health, life sciences, or evaluation methodology.</p>
-          <div class="tags">
-            <span>Systems engineering</span><span>Machine learning</span><span>Research methods</span><span>Digital health</span>
-          </div>
-        </article>
+        {teamMembers.map((member) => (
+          <article class="about-card">
+            <div class="role">{member.data.role}</div>
+            <h3 class="name">{member.data.name}</h3>
+            <PortableText value={member.data.bio} />
+            <div class="tags">
+              {(member.data.tags as string[]).map(tag => <span>{tag}</span>)}
+            </div>
+          </article>
+        ))}
 
         <div class="about-quote">
           <div class="label">Selected work</div>
@@ -252,15 +231,15 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
         <div class="eyebrow"><span class="num">04</span><span class="bar"></span><span>Also from this household</span></div>
         <h2>We publish a weekly podcast about raising small humans.</h2>
         <p>
-          Every week Tim &amp; Christina sit down to talk through whatever they&rsquo;re currently figuring out as parents &mdash; sleep, illness, sibling dynamics &mdash; with the research that does (and doesn&rsquo;t) back it. Honest, hedged, citing studies, no hot takes.
+          {meta.podcast_description ?? "Every week Tim & Christina sit down to talk through whatever they're currently figuring out as parents — sleep, illness, sibling dynamics — with the research that does (and doesn't) back it. Honest, hedged, citing studies, no hot takes."}
         </p>
-        <a class="podcast-cta" href="https://littlebighumans.co" target="_blank" rel="noopener">
-          Listen at littlebighumans.co <span class="arrow">→</span>
+        <a class="podcast-cta" href={meta.podcast_url ?? "https://littlebighumans.co"} target="_blank" rel="noopener">
+          Listen at {meta.podcast_url ? meta.podcast_url.replace(/^https?:\/\//, "") : "littlebighumans.co"} <span class="arrow">→</span>
         </a>
       </div>
 
       <aside class="podcast-meta">
-        <div class="row"><span>Show</span><b>Little Big Humans</b></div>
+        <div class="row"><span>Show</span><b>{meta.podcast_name ?? "Little Big Humans"}</b></div>
         <div class="row"><span>Hosts</span><b>Tim &amp; Christina Frazer</b></div>
         <div class="row"><span>Cadence</span><b>Weekly</b></div>
         <div class="row"><span>Topics</span><b>Sleep · feeding · research</b></div>
@@ -311,17 +290,17 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
         </div>
         <div class="item">
           <div class="k">Calendar</div>
-          <div class="v"><a href="https://calendar.notion.so/meet/timfrazer/knnbg4p9z">Book a 30&minus;minute intro</a></div>
+          <div class="v"><a href={calendarUrl}>Book a 30&minus;minute intro</a></div>
         </div>
         <div class="item">
           <div class="k">Based</div>
-          <div class="v">Philadelphia &middot; Vancouver &middot; London &middot; New York</div>
-          <div class="v" style="font-size: 13px; color: var(--page-muted); margin-top: 4px; line-height: 1.4;">Home base in Philadelphia. We hold a company in Vancouver and run engagements out of London and New York.</div>
+          <div class="v">{meta.locations ?? "Philadelphia · Vancouver · London · New York"}</div>
+          <div class="v" style="font-size: 13px; color: var(--page-muted); margin-top: 4px; line-height: 1.4;">{meta.locations_note ?? "Home base in Philadelphia. We hold a company in Vancouver and run engagements out of London and New York."}</div>
         </div>
         <div class="item">
           <div class="k">Currently</div>
           <div class="v" style="font-size: 16px; color: var(--page-muted); line-height: 1.4;">
-            Booking consulting engagements for Q3 2026. Two freelance slots open in August.
+            {meta.availability_note ?? "Booking consulting engagements for Q3 2026. Two freelance slots open in August."}
           </div>
         </div>
       </aside>
