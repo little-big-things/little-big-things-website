@@ -1,33 +1,28 @@
 ---
-import Base from "../layouts/Base.astro";
+import MarketingLayout from "../layouts/MarketingLayout.astro";
 ---
 
-<Base title="Page not found">
-	<div class="not-found">
-		<h1>404</h1>
-		<p>The page you're looking for doesn't exist.</p>
-		<a href="/">Go back home</a>
-	</div>
-</Base>
+<MarketingLayout title="Page not found — Little Big Things">
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="nav-mark" href="/" aria-label="Little Big Things — home">
+        <svg class="lbt-mark" viewBox="0 0 160 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M10 120 L35 95 L60 120 Z"/>
+          <path d="M40 120 L75 85 L110 120 Z"/>
+          <path d="M80 120 L120 80 L160 120 Z"/>
+          <rect x="0" y="124" width="160" height="6"/>
+          <path class="notch" d="M78 118 L84 105 L78 105 L84 95 L78 108 L82 108 L74 118 Z"/>
+        </svg>
+        <span class="wm">Little Big Things<small>Tim &amp; Christina Frazer</small></span>
+      </a>
+    </div>
+  </nav>
 
-<style>
-	.not-found {
-		text-align: center;
-		padding: var(--spacing-24) var(--spacing-6);
-	}
-
-	.not-found h1 {
-		font-size: var(--font-size-5xl);
-		margin-bottom: var(--spacing-2);
-		color: var(--color-border);
-	}
-
-	.not-found p {
-		color: var(--color-muted);
-		margin-bottom: var(--spacing-6);
-	}
-
-	.not-found a {
-		color: var(--color-text);
-	}
-</style>
+  <section class="hero" style="min-height: 60vh; display: flex; align-items: center; justify-content: center; text-align: center;">
+    <div class="container">
+      <h1 class="hero-headline" style="font-size: clamp(48px, 8vw, 120px);">404</h1>
+      <p class="hero-lede" style="margin-top: 16px;">The page you&rsquo;re looking for doesn&rsquo;t exist.</p>
+      <a class="btn btn-ghost btn-lg" href="/" style="margin-top: 32px;">Go home &rarr;</a>
+    </div>
+  </section>
+</MarketingLayout>

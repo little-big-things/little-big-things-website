@@ -1,50 +1,17 @@
 ---
 import MarketingLayout from "../layouts/MarketingLayout.astro";
-import { getEmDashCollection, getEmDashEntry, getSiteSettings } from "emdash";
-import { PortableText } from "emdash/ui";
-
-// Fetch all the data we need in parallel
-const [
-  { entry: homePage, cacheHint: homeHint },
-  { entries: services, cacheHint: servicesHint },
-  { entries: teamMembers, cacheHint: teamHint },
-  { entries: focusAreas, cacheHint: focusHint },
-  settings,
-] = await Promise.all([
-  getEmDashEntry("pages", "home"),
-  getEmDashCollection("services", { orderBy: { order: "asc" } }),
-  getEmDashCollection("team_members", { orderBy: { order: "asc" } }),
-  getEmDashCollection("focus_areas", { orderBy: { order: "asc" } }),
-  getSiteSettings(),
-]);
-
-if (Astro.cache?.enabled) {
-  Astro.cache.set(homeHint);
-  Astro.cache.set(servicesHint);
-  Astro.cache.set(teamHint);
-  Astro.cache.set(focusHint);
-}
-
-const meta = (homePage?.data?.metadata ?? {}) as Record<string, string>;
-const calendarUrl = meta.calendar_url ?? "https://calendar.notion.so/meet/timfrazer/knnbg4p9z";
 ---
 
 <MarketingLayout
 	title="Little Big Things — Tim & Christina Frazer"
-	description="Little Big Things is the consulting, investing and freelance practice of Tim & Christina Frazer — focused work across data, AI engineering and analytics."
+	description="Tim & Christina Frazer — a family of six (plus dog) from Pennsylvania, hosting the Little Big Humans podcast about raising small kids with the research that backs it."
 	canonical="https://littlebigthings.co/"
 >
-
-
-  <!-- Vertical type spine running down the left edge -->
-  <div class="spine" aria-hidden="true">
-    ESTABLISHED 2017<span class="dot"></span>PHILADELPHIA<span class="dot"></span>VANCOUVER<span class="dot"></span>LONDON<span class="dot"></span>NEW YORK
-  </div>
 
   <!-- ===== NAV ===== -->
   <nav class="nav">
     <div class="container nav-inner">
-      <a class="nav-mark" href="#top" aria-label="Little Big Things — home">
+      <a class="nav-mark" href="/" aria-label="Little Big Things — home">
         <svg class="lbt-mark" viewBox="0 0 160 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M10 120 L35 95 L60 120 Z"/>
           <path d="M40 120 L75 85 L110 120 Z"/>
@@ -55,12 +22,10 @@ const calendarUrl = meta.calendar_url ?? "https://calendar.notion.so/meet/timfra
         <span class="wm">Little Big Things<small>Tim &amp; Christina Frazer</small></span>
       </a>
       <div class="nav-links">
-        <a href="#services">Services</a>
-        <a href="#focus" class="lk-hide-sm">Focus</a>
-        <a href="#about" class="lk-hide-sm">About</a>
         <a href="#podcast">Podcast</a>
-        <span class="sep" aria-hidden="true"></span>
-        <a class="btn btn-primary" href={calendarUrl} style="color: rgb(255, 250, 248)">Book a call <span class="arrow">→</span></a>
+        <a href="#about">About</a>
+        <a href="#work">Work</a>
+        <a href="#contact">Contact</a>
       </div>
     </div>
   </nav>
@@ -71,180 +36,89 @@ const calendarUrl = meta.calendar_url ?? "https://calendar.notion.so/meet/timfra
 
     <div class="container hero-grid">
       <div>
-        <div class="eyebrow">
-          <span class="bar"></span>
-          <span class="num">EST 2017</span>
-          <span>· A small practice in big things</span>
-        </div>
-
         <h1 class="hero-headline">
           <span class="ln1">the little things</span>
           <span class="ln2"><em>compound.</em></span>
         </h1>
 
         <p class="hero-lede">
-          <strong>Tim &amp; Christina Frazer</strong> {meta.hero_lede ?? "run a consulting, investing, and freelance practice across AI, data, and software engineering — from a household where the same operating principle applies to a Series\u00A0A roadmap and a bedtime routine."}
+          Hi, we&rsquo;re <strong>Tim &amp; Christina Frazer</strong> &mdash; a family of six (plus dog) from Pennsylvania. We host a podcast about raising small kids, backed by the research we actually read. Pull up a chair.
         </p>
 
         <div class="hero-ctas">
-          <a class="btn btn-primary btn-lg" href={calendarUrl} style="color: rgb(255, 250, 248)">Book a call <span class="arrow">→</span></a>
-          <a class="btn btn-ghost btn-lg" href="#podcast">Hear the podcast</a>
+          <a class="btn btn-primary btn-lg" href="https://littlebighumans.co" target="_blank" rel="noopener" style="color: rgb(255, 250, 248)">Listen to the podcast <span class="arrow">&rarr;</span></a>
+          <a class="btn btn-ghost btn-lg" href="#about">About us</a>
         </div>
       </div>
+    </div>
+  </section>
 
-      <aside class="hero-side" aria-hidden="true">
-        <div class="marker">
-          <b>EST 2017</b> &nbsp;·&nbsp; PHL · YVR · LDN · NYC &nbsp;·&nbsp; Small, by design
-        </div>
+  <!-- ===== PODCAST ===== -->
+  <section class="podcast" id="podcast">
+    <div class="stripes" aria-hidden="true"></div>
+    <div class="container podcast-grid">
+      <div>
+        <div class="eyebrow"><span class="bar"></span><span>The podcast</span></div>
+        <h2>Little Big Humans &mdash; a podcast about raising small kids.</h2>
+        <p>
+          Every other week we sit down and talk through whatever we&rsquo;re currently figuring out as parents &mdash; sleep, illness, sibling dynamics &mdash; with the research that does (and doesn&rsquo;t) back it. Honest, hedged, citing studies, no hot takes.
+        </p>
+        <a class="podcast-cta" href="https://littlebighumans.co" target="_blank" rel="noopener">
+          Listen at littlebighumans.co <span class="arrow">&rarr;</span>
+        </a>
+      </div>
+
+      <aside class="podcast-meta">
+        <div class="row"><span>Show</span><b>Little Big Humans</b></div>
+        <div class="row"><span>Hosts</span><b>Tim &amp; Christina Frazer</b></div>
+        <div class="row"><span>Cadence</span><b>Every other week</b></div>
+        <div class="row"><span>Topics</span><b>Sleep &middot; feeding &middot; research</b></div>
+        <div class="row"><span>Listen</span><b>Apple &middot; Spotify &middot; Substack</b></div>
       </aside>
-    </div>
-
-    <div class="container hero-foot">
-      <div class="pair">
-        <b>What we do</b>
-        Consulting, investing, and freelance work for teams shipping with data &amp; AI.
-      </div>
-      <div class="ranges">
-        <div class="pair"><b>For</b>Founders &middot; CTOs &middot; product leaders</div>
-        <div class="pair"><b>Across</b>AI &middot; Data &middot; Software engineering</div>
-        <div class="pair"><b>Also</b>A weekly podcast on raising young kids &mdash; with the research that backs it</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== SERVICES ===== -->
-  <section class="services" id="services">
-    <div class="container">
-      <header class="section-head">
-        <div>
-          <div class="eyebrow"><span class="num">01</span><span class="bar"></span><span>What we do</span></div>
-          <h2 class="section-title">Three ways we&rsquo;ll work together &mdash; or not at all.</h2>
-        </div>
-        <p class="section-kicker">
-          We keep the practice small on purpose, because targeted, specific work produces outsized impact. Tim and Christina lead every engagement, and pull in the right collaborators when the work calls for them.
-        </p>
-      </header>
-
-      <div class="stack">
-        {services.map((service, i) => (
-          <article class="stack-row">
-            <div class="stack-num">0{i + 1} / {service.data.title}</div>
-            <h3 class="stack-h">{service.data.title}<small>{service.data.subtitle}</small></h3>
-            <div class="stack-body">
-              <PortableText value={service.data.description} />
-            </div>
-            <div class="stack-meta"><b>{service.data.duration}</b>{service.data.scope}</div>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== FOCUS ===== -->
-  <section id="focus">
-    <div class="container">
-      <header class="section-head">
-        <div>
-          <div class="eyebrow"><span class="num">02</span><span class="bar"></span><span>Where we work</span></div>
-          <h2 class="section-title">Three disciplines, one operating system.</h2>
-        </div>
-        <p class="section-kicker">
-          We don&rsquo;t pretend to be generalists. The work lives in the overlap of AI, data, and the software engineering that quietly holds both up.
-        </p>
-      </header>
-
-      <div class="focus-grid">
-        {focusAreas.map((area) => (
-          <article class="focus-cell">
-            <div class="focus-bars" aria-hidden="true"><span></span><span></span><span></span></div>
-            <h3 class="focus-name">{area.data.name}</h3>
-            <p>{area.data.description}</p>
-            <div class="focus-tags">
-              {(area.data.tags as string[]).map(tag => (
-                <span class="focus-tag">{tag}</span>
-              ))}
-            </div>
-          </article>
-        ))}
-      </div>
     </div>
   </section>
 
   <!-- ===== ABOUT ===== -->
   <section id="about" style="background: color-mix(in srgb, var(--page-fg) 3%, var(--page-bg));">
     <div class="container">
-      <header class="section-head">
-        <div>
-          <div class="eyebrow"><span class="num">03</span><span class="bar"></span><span>Small, by design</span></div>
-          <h2 class="section-title">Targeted work. Outsized impact.</h2>
-        </div>
-        <p class="section-kicker">
-          Tim &amp; Christina Frazer lead the practice. We stay small because specific, well-scoped work is where we move the needle &mdash; and we bring in trusted engineers and operators when an engagement calls for more hands.
-        </p>
-      </header>
-
       <div class="about-grid">
         <figure class="couple-photo">
-          <img src="/assets/photo-christina.jpeg" alt="Christina Frazer, Brooklyn 2020." loading="eager" />
-          <figcaption class="ptag">Christina &middot; Brooklyn, 2020</figcaption>
+          <img src="/assets/photo-christina.jpeg" alt="Tim & Christina Frazer" loading="eager" />
         </figure>
 
-        {teamMembers.map((member) => (
-          <article class="about-card">
-            <div class="role">{member.data.role}</div>
-            <h3 class="name">{member.data.name}</h3>
-            <PortableText value={member.data.bio} />
-            <div class="tags">
-              {(member.data.tags as string[]).map(tag => <span>{tag}</span>)}
-            </div>
-          </article>
-        ))}
-
-        <div class="about-quote">
-          <div class="label">Selected work</div>
-          <div style="display: flex; flex-direction: column; gap: 14px;">
-            <div class="swork-list">
-              <a href="https://trustandwill.com" target="_blank" rel="noopener">Trust &amp; Will</a><span class="sep">·</span>
-              <a href="https://aws.amazon.com" target="_blank" rel="noopener">Amazon Web Services</a><span class="sep">·</span>
-              <a href="https://www.thriveglobal.com" target="_blank" rel="noopener">Thrive Global</a><span class="sep">·</span>
-              <a href="https://bonobos.com" target="_blank" rel="noopener">Bonobos / Walmart</a><span class="sep">·</span>
-              <a href="https://www.vanguardcharitable.org" target="_blank" rel="noopener">Vanguard Charitable</a><span class="sep">·</span>
-              <a href="https://joopiter.com" target="_blank" rel="noopener">Joopiter</a><span class="sep">·</span>
-              <a href="https://molecularyou.com" target="_blank" rel="noopener">Molecular You</a><span class="sep">·</span>
-              <a href="https://www.paihealth.com" target="_blank" rel="noopener">PAI Health</a><span class="sep small">(prev. Mio Global)</span><span class="sep">·</span>
-              <a href="https://www.thelancet.com" target="_blank" rel="noopener">The Lancet</a><span class="sep">·</span>
-              <a href="https://brainstation.io" target="_blank" rel="noopener">BrainStation</a>
-            </div>
-            <div style="font-family: var(--font-ui); font-size: 12px; letter-spacing: .04em; color: var(--page-muted);">Roles &amp; engagements held by Tim &amp; Christina between 2008 &ndash; today.</div>
-          </div>
-          <div class="attr">EST 2017<br/>PHL &middot; YVR &middot; LDN &middot; NYC</div>
-        </div>
+        <article class="about-intro">
+          <h2 class="section-title" style="margin-bottom: 24px;">Hey, we&rsquo;re Tim &amp; Christina.</h2>
+          <p>
+            We live outside Philadelphia with our four kids and a dog who thinks she&rsquo;s the fifth. Tim works in data and AI engineering. Christina is a systems engineer and researcher. Between the two of us we&rsquo;ve spent almost twenty years building things for startups and companies like Amazon, Trust &amp; Will, and Thrive Global.
+          </p>
+          <p>
+            But this site isn&rsquo;t really about that. It&rsquo;s about the podcast &mdash; <em>Little Big Humans</em> &mdash; where we talk about the stuff we&rsquo;re actually figuring out at home: how to get a toddler to sleep, what the research says about screen time, how to stay a team when you&rsquo;re outnumbered by small people. We read the papers so you don&rsquo;t have to, and we&rsquo;re honest about what we still don&rsquo;t know.
+          </p>
+          <p>
+            If any of that sounds like your life right now, we&rsquo;d love to have you listening.
+          </p>
+        </article>
       </div>
     </div>
   </section>
 
-  <!-- ===== PODCAST STRIP ===== -->
-  <section class="podcast" id="podcast">
-    <div class="stripes" aria-hidden="true"></div>
-    <div class="container podcast-grid">
-      <div>
-        <div class="eyebrow"><span class="num">04</span><span class="bar"></span><span>Also from this household</span></div>
-        <h2>We publish a weekly podcast about raising small humans.</h2>
-        <p>
-          {meta.podcast_description ?? "Every week Tim & Christina sit down to talk through whatever they're currently figuring out as parents — sleep, illness, sibling dynamics — with the research that does (and doesn't) back it. Honest, hedged, citing studies, no hot takes."}
-        </p>
-        <a class="podcast-cta" href={meta.podcast_url ?? "https://littlebighumans.co"} target="_blank" rel="noopener">
-          Listen at {meta.podcast_url ? meta.podcast_url.replace(/^https?:\/\//, "") : "littlebighumans.co"} <span class="arrow">→</span>
-        </a>
+  <!-- ===== WORK ===== -->
+  <section class="work" id="work">
+    <div class="container">
+      <div class="work-grid">
+        <div>
+          <div class="eyebrow"><span class="bar"></span><span>The day jobs</span></div>
+          <h2 class="section-title" style="margin-top: 14px;">We also build things for a living.</h2>
+        </div>
+        <div class="work-body">
+          <p>
+            Outside the podcast, Little Big Things is a small consulting and investing practice. Tim and Christina work across data, AI, and software engineering &mdash; usually with founders and technical leaders who need a focused extra set of hands, not an agency.
+          </p>
+          <p>
+            We also invest small checks at pre-seed and seed. If either of those sounds relevant, reach out below &mdash; we&rsquo;re always happy to talk.
+          </p>
+        </div>
       </div>
-
-      <aside class="podcast-meta">
-        <div class="row"><span>Show</span><b>{meta.podcast_name ?? "Little Big Humans"}</b></div>
-        <div class="row"><span>Hosts</span><b>Tim &amp; Christina Frazer</b></div>
-        <div class="row"><span>Cadence</span><b>Weekly</b></div>
-        <div class="row"><span>Topics</span><b>Sleep · feeding · research</b></div>
-        <div class="row"><span>Listen</span><b>Apple · Spotify · Substack</b></div>
-      </aside>
     </div>
   </section>
 
@@ -252,56 +126,28 @@ const calendarUrl = meta.calendar_url ?? "https://calendar.notion.so/meet/timfra
   <section class="contact" id="contact">
     <div class="container contact-grid">
       <div>
-        <div class="eyebrow"><span class="num">05</span><span class="bar"></span><span>Get in touch</span></div>
-        <h2 style="margin-top: 14px;">Tell us what you&rsquo;re trying to <em>ship.</em></h2>
+        <div class="eyebrow"><span class="bar"></span><span>Get in touch</span></div>
+        <h2 style="margin-top: 14px;">Say <em>hello.</em></h2>
 
         <form class="contact-form" id="contact-form">
           <div class="row">
             <div class="field"><input type="text" name="name" placeholder="Your name" required /></div>
             <div class="field"><input type="email" name="email" placeholder="Email" required /></div>
           </div>
-          <div class="row">
-            <div class="field"><input type="text" name="company" placeholder="Company" /></div>
-            <div class="field">
-              <select name="engagement" style="flex:1; border:0; background:transparent; font-family: var(--font-text); font-size: 18px; color: var(--page-fg); padding: 6px 0; appearance:none;">
-                <option value="">Engagement &mdash; pick one</option>
-                <option value="Consulting — data / AI strategy">Consulting &mdash; data / AI strategy</option>
-                <option value="Freelance — software engineering">Freelance &mdash; software engineering</option>
-                <option value="Investing — pitch deck">Investing &mdash; pitch deck</option>
-                <option value="Something else">Something else</option>
-              </select>
-            </div>
-          </div>
           <div class="field">
-            <textarea rows="3" name="message" placeholder="A sentence or two on the thing you&rsquo;re trying to ship."></textarea>
+            <textarea rows="3" name="message" placeholder="What's on your mind?"></textarea>
           </div>
           <div class="submit-row">
-            <small>This opens a pre-filled email to Tim so your note is actually sent.</small>
-            <button class="btn btn-primary btn-lg" type="submit">Email us <span class="arrow">→</span></button>
+            <small>This opens a pre-filled email so your note is actually sent.</small>
+            <button class="btn btn-primary btn-lg" type="submit">Send a message <span class="arrow">&rarr;</span></button>
           </div>
         </form>
       </div>
 
       <aside class="contact-aside">
         <div class="item">
-          <div class="k">Direct</div>
+          <div class="k">Email</div>
           <div class="v" style="font-size: 18px;"><a href="mailto:tim@littlebigthings.co">tim@littlebigthings.co</a></div>
-          <div class="v" style="font-size: 18px; margin-top: 6px;"><a href="mailto:christina@littlebigthings.co">christina@littlebigthings.co</a></div>
-        </div>
-        <div class="item">
-          <div class="k">Calendar</div>
-          <div class="v"><a href={calendarUrl}>Book a 30&minus;minute intro</a></div>
-        </div>
-        <div class="item">
-          <div class="k">Based</div>
-          <div class="v">{meta.locations ?? "Philadelphia · Vancouver · London · New York"}</div>
-          <div class="v" style="font-size: 13px; color: var(--page-muted); margin-top: 4px; line-height: 1.4;">{meta.locations_note ?? "Home base in Philadelphia. We hold a company in Vancouver and run engagements out of London and New York."}</div>
-        </div>
-        <div class="item">
-          <div class="k">Currently</div>
-          <div class="v" style="font-size: 16px; color: var(--page-muted); line-height: 1.4;">
-            {meta.availability_note ?? "Booking consulting engagements for Q3 2026. Two freelance slots open in August."}
-          </div>
         </div>
       </aside>
     </div>
@@ -318,16 +164,9 @@ const calendarUrl = meta.calendar_url ?? "https://calendar.notion.so/meet/timfra
           <rect x="0" y="124" width="160" height="6"/>
           <path class="notch" d="M78 118 L84 105 L78 105 L84 95 L78 108 L82 108 L74 118 Z"/>
         </svg>
-        <span>Little Big Things &middot; EST 2017</span>
+        <span>Little Big Things</span>
       </div>
-      <div class="center">
-        <a href="#services">Services</a>
-        <a href="#focus">Focus</a>
-        <a href="#about">About</a>
-        <a href="#podcast">Podcast</a>
-        <a href="#contact">Contact</a>
-      </div>
-      <div class="right">&copy; 2026 Little Big Things &middot; littlebigthings.co</div>
+      <div class="right">&copy; 2026 Tim &amp; Christina Frazer</div>
     </div>
   </footer>
 
@@ -338,23 +177,19 @@ const calendarUrl = meta.calendar_url ?? "https://calendar.notion.so/meet/timfra
       const data = new FormData(contactForm);
       const name = String(data.get("name") || "").trim();
       const email = String(data.get("email") || "").trim();
-      const company = String(data.get("company") || "").trim();
-      const engagement = String(data.get("engagement") || "").trim();
       const message = String(data.get("message") || "").trim();
       const status = contactForm.querySelector<HTMLElement>(".submit-row small");
       const button = contactForm.querySelector<HTMLButtonElement>("button[type='submit']");
 
-      const subject = encodeURIComponent("Little Big Things inquiry");
+      const subject = encodeURIComponent("Hello from " + name);
       const body = encodeURIComponent([
         `Name: ${name}`,
         `Email: ${email}`,
-        company ? `Company: ${company}` : null,
-        engagement ? `Engagement: ${engagement}` : null,
         "",
-        message ? `Message: ${message}` : null,
+        message ? message : null,
       ].filter(Boolean).join("\n"));
 
-      if (status) status.textContent = "Opening your email client with a pre-filled note.";
+      if (status) status.textContent = "Opening your email client\u2026";
       if (button) button.disabled = true;
       window.location.href = `mailto:tim@littlebigthings.co?subject=${subject}&body=${body}`;
     });

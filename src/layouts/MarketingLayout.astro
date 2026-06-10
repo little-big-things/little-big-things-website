@@ -1,7 +1,4 @@
 ---
-import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
-import { createPublicPageContext } from "emdash/page";
-import { getSiteSettings } from "emdash";
 import "../styles/lbt-colors.css";
 import "../styles/lbt-page.css";
 
@@ -18,22 +15,6 @@ const {
 	canonical = "https://littlebigthings.co/",
 	image = "https://littlebigthings.co/og-image.png",
 } = Astro.props;
-
-const settings = await getSiteSettings();
-const siteTitle = settings?.title ?? "Little Big Things";
-
-const pageCtx = createPublicPageContext({
-	Astro,
-	kind: "custom",
-	pageType: "website",
-	title,
-	pageTitle: title,
-	description,
-	canonical,
-	image,
-	seo: { ogImage: image },
-	siteName: siteTitle,
-});
 ---
 
 <!doctype html>
@@ -51,11 +32,18 @@ const pageCtx = createPublicPageContext({
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet" />
-		<EmDashHead page={pageCtx} />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={image} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:site_name" content="Little Big Things" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={image} />
 	</head>
 	<body class="lbh-baseline">
-		<EmDashBodyStart page={pageCtx} />
 		<slot />
-		<EmDashBodyEnd page={pageCtx} />
 	</body>
 </html>
