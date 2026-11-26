@@ -1,12 +1,18 @@
 ---
+import { Picture } from "astro:assets";
 import MarketingLayout from "../layouts/MarketingLayout.astro";
+import photo from "../assets/photo-tim-christina.jpeg";
+
+const year = new Date().getFullYear();
 ---
 
 <MarketingLayout
 	title="Little Big Things — Tim & Christina Frazer"
-	description="Data, AI, and software engineering consulting for founders and technical leaders. Tim & Christina Frazer work end-to-end — from data architecture to production code."
+	description="Data, AI, and software engineering consulting for founders and technical leaders. Tim & Christina Frazer work end-to-end—from data architecture to production code."
 	canonical="https://littlebigthings.co/"
 >
+
+  <a class="skip-link" href="#main">Skip to content</a>
 
   <!-- ===== NAV ===== -->
   <nav class="nav">
@@ -19,15 +25,40 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
           <rect x="0" y="124" width="160" height="6"/>
           <path class="notch" d="M78 118 L84 105 L78 105 L84 95 L78 108 L82 108 L74 118 Z"/>
         </svg>
-        <span class="wm">Little Big Things<small>Tim &amp; Christina Frazer</small></span>
+        <span class="wm">Little Big Things</span>
       </a>
       <div class="nav-links">
         <a href="#work">Work</a>
         <a href="#about">About</a>
         <a href="#contact">Contact</a>
       </div>
+
+      <!-- Phones: the links move into a side menu that grows out of the button
+           (after olivierlarose.com's "Awwwards side menu"). -->
+      <div class="menu" data-menu>
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="menu-panel" aria-label="Menu">
+          <span class="menu-button-slider" aria-hidden="true">
+            <!-- Icons: Lucide "menu" and "x" (ISC licence, lucide.dev) -->
+            <span class="menu-button-face"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="M4 18h16"/><path d="M4 6h16"/></svg></span>
+            <span class="menu-button-face menu-button-face--close"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span>
+          </span>
+        </button>
+        <nav class="menu-panel" id="menu-panel" aria-label="Main">
+          <ul class="menu-links">
+            <li style="--i:0"><a href="#work">Work</a></li>
+            <li style="--i:1"><a href="#about">About</a></li>
+            <li style="--i:2"><a href="#contact">Contact</a></li>
+          </ul>
+          <ul class="menu-footer">
+            <li style="--i:0"><a href="mailto:tim@littlebigthings.co">tim@littlebigthings.co</a></li>
+            <li style="--i:1"><a href="https://littlebighumans.co" target="_blank" rel="noopener">Little Big Humans<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
     </div>
   </nav>
+
+  <main id="main">
 
   <!-- ===== HERO ===== -->
   <section class="hero" id="top">
@@ -36,16 +67,16 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
     <div class="container hero-grid">
       <div>
         <h1 class="hero-headline">
-          <span class="ln1">the little things</span>
-          <span class="ln2"><em>compound.</em></span>
+          <span class="ln1">the li<span class="kern-tt">t</span>tle things</span>
+          <span class="ln2"><em><span class="visually-hidden"> compound.</span><span class="vf-letters" aria-hidden="true"><span style="--i:0">c</span><span style="--i:1">o</span><span style="--i:2">m</span><span style="--i:3">p</span><span style="--i:4">o</span><span style="--i:5">u</span><span style="--i:6">n</span><span style="--i:7">d</span><span style="--i:8">.</span></span></em></span>
         </h1>
 
         <p class="hero-lede">
-          <strong>Little Big Things</strong> is a consulting and investing practice led by Tim &amp; Christina Frazer. We work end-to-end across data, AI, and software engineering &mdash; architecture through production code &mdash; for founders and technical leaders who need senior hands, not an agency.
+          <strong>Little Big Things</strong> is a consulting and investing practice led by Tim &amp; Christina Frazer. We work end-to-end across data, AI, and software engineering&mdash;architecture through production code&mdash;for founders and technical leaders who need senior hands, not an agency.
         </p>
 
         <div class="hero-ctas">
-          <a class="btn btn-primary btn-lg" href="#contact" style="color: rgb(255, 250, 248)">Get in touch <span class="arrow">&rarr;</span></a>
+          <a class="btn btn-primary btn-lg" href="#contact">Get in touch <span class="arrow" aria-hidden="true">&rarr;</span></a>
           <a class="btn btn-ghost btn-lg" href="#work">See our work</a>
         </div>
       </div>
@@ -62,13 +93,13 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
         </div>
         <div class="work-body">
           <p>
-            We embed with your team and own the problem from data strategy through working code. That means architecture, pipelines, infrastructure, and the software that ties it together &mdash; not a slide deck.
+            We embed with your team and own the problem from data strategy through working code. That means architecture, pipelines, infrastructure, and the software that ties it together&mdash;not a slide deck.
           </p>
           <p>
-            Recent work includes end-to-end data architecture and development for <a href="https://molecularyou.com" target="_blank" rel="noopener">Molecular You</a> and <a href="https://joopiter.com" target="_blank" rel="noopener">Joopiter</a>, alongside longer relationships with teams at Amazon, Trust &amp; Will, Bonobos, and Thrive Global.
+            Recent work includes end-to-end data architecture and development for <a href="https://molecularyou.com" target="_blank" rel="noopener">Molecular You<span class="visually-hidden"> (opens in a new tab)</span></a> and <a href="https://joopiter.com" target="_blank" rel="noopener">Joopiter<span class="visually-hidden"> (opens in a new tab)</span></a>, alongside longer relationships with teams at Amazon, Trust &amp; Will, Bonobos, and Thrive Global.
           </p>
           <p>
-            We also invest at pre-seed and seed &mdash; typically in technical founders building in spaces we understand. If that&rsquo;s you, we&rsquo;d like to hear about it.
+            We also invest at pre-seed and seed&mdash;typically in technical founders building in spaces we understand. If that&rsquo;s you, we&rsquo;d like to hear about it.
           </p>
         </div>
       </div>
@@ -80,19 +111,28 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
     <div class="container">
       <div class="about-grid">
         <figure class="couple-photo">
-          <img src="/assets/photo-christina.jpeg" alt="Tim & Christina Frazer" loading="eager" />
+          <Picture
+            src={photo}
+            formats={["avif", "webp"]}
+            widths={[400, 720, 1080, 1440]}
+            sizes="(max-width: 720px) calc(100vw - 48px), (max-width: 880px) calc(100vw - 112px), (max-width: 1400px) calc((100vw - 176px) / 2.2), 556px"
+            alt="Tim & Christina Frazer"
+            loading="lazy"
+            decoding="async"
+          />
         </figure>
 
         <article class="about-intro">
-          <h2 class="section-title" style="margin-bottom: 24px;">Tim &amp; Christina Frazer</h2>
+          <div class="eyebrow"><span class="bar"></span><span>Who we are</span></div>
+          <h2 class="section-title">Tim &amp; Christina Frazer</h2>
           <p>
             Tim is a data and AI engineer who&rsquo;s spent the last fifteen years building analytics platforms, data infrastructure, and ML systems for startups and public companies. Christina is a systems engineer and researcher with deep experience in machine learning and scientific computing.
           </p>
           <p>
-            We lead every engagement ourselves. We stay small on purpose &mdash; two people who know each other&rsquo;s work inside out, pulling in trusted collaborators when a project calls for more hands.
+            We lead every engagement ourselves. We stay small on purpose&mdash;two people who know each other&rsquo;s work inside out, pulling in trusted collaborators when a project calls for more hands.
           </p>
           <p>
-            We also host <a href="https://littlebighumans.co" target="_blank" rel="noopener"><em>Little Big Humans</em></a>, a podcast about raising young kids with the research that backs it. Four kids, one dog, Philadelphia.
+            We also host <a href="https://littlebighumans.co" target="_blank" rel="noopener"><em>Little Big Humans</em><span class="visually-hidden"> (opens in a new tab)</span></a>, a podcast about raising young kids with the research that backs it. Four kids, one dog, Philadelphia.
           </p>
         </article>
       </div>
@@ -108,32 +148,43 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
 
         <form class="contact-form" id="contact-form">
           <div class="row">
-            <div class="field"><input type="text" name="name" placeholder="Your name" required /></div>
-            <div class="field"><input type="email" name="email" placeholder="Email" required /></div>
+            <div class="field-group">
+              <label for="cf-name">Name</label>
+              <div class="field"><input id="cf-name" type="text" name="name" autocomplete="name" required /></div>
+            </div>
+            <div class="field-group">
+              <label for="cf-email">Email</label>
+              <div class="field"><input id="cf-email" type="email" name="email" autocomplete="email" required /></div>
+            </div>
           </div>
-          <div class="field">
-            <textarea rows="3" name="message" placeholder="What are you building? Where do you need help?"></textarea>
+          <div class="field-group">
+            <label for="cf-message">Message</label>
+            <div class="field">
+              <textarea id="cf-message" rows="3" name="message" placeholder="What are you building? Where do you need help?"></textarea>
+            </div>
           </div>
           <div class="submit-row">
-            <small>This opens a pre-filled email so your note is actually sent.</small>
-            <button class="btn btn-primary btn-lg" type="submit">Send a message <span class="arrow">&rarr;</span></button>
+            <small class="form-status" role="status"></small>
+            <button class="btn btn-primary btn-lg" type="submit">Send a message <span class="arrow" aria-hidden="true">&rarr;</span></button>
           </div>
         </form>
       </div>
 
-      <aside class="contact-aside">
+      <div class="contact-aside">
         <div class="item">
           <div class="k">Email</div>
-          <div class="v" style="font-size: 18px;"><a href="mailto:tim@littlebigthings.co">tim@littlebigthings.co</a></div>
+          <div class="v"><a href="mailto:tim@littlebigthings.co">tim@littlebigthings.co</a></div>
         </div>
-      </aside>
+      </div>
     </div>
   </section>
+
+  </main>
 
   <!-- ===== FOOTER ===== -->
   <footer>
     <div class="container foot-grid">
-      <div class="left">
+      <div class="left nav-mark">
         <svg class="lbt-mark" viewBox="0 0 160 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M10 120 L35 95 L60 120 Z"/>
           <path d="M40 120 L75 85 L110 120 Z"/>
@@ -141,13 +192,58 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
           <rect x="0" y="124" width="160" height="6"/>
           <path class="notch" d="M78 118 L84 105 L78 105 L84 95 L78 108 L82 108 L74 118 Z"/>
         </svg>
-        <span>Little Big Things</span>
+        <span class="wm">Little Big Things</span>
       </div>
-      <div class="right">&copy; 2026 Tim &amp; Christina Frazer</div>
+      <div class="right">&copy; <span data-year>{year}</span> Little Big Things</div>
     </div>
   </footer>
 
   <script>
+    // Copyright year: the visitor's current year, so it never goes stale on a
+    // static build. The build year in the HTML is the fallback.
+    document.querySelectorAll("[data-year]").forEach((el) => {
+      el.textContent = String(new Date().getFullYear());
+    });
+
+    // Side menu (phones). Opens from the button; closes on Escape, on a link,
+    // on a click outside, or when focus leaves the menu.
+    const menu = document.querySelector<HTMLElement>("[data-menu]");
+    const menuButton = menu?.querySelector<HTMLButtonElement>(".menu-button");
+    const setMenu = (open: boolean, returnFocus = false) => {
+      if (!menu || !menuButton) return;
+      menu.classList.toggle("is-open", open);
+      menuButton.setAttribute("aria-expanded", String(open));
+      menuButton.setAttribute("aria-label", open ? "Close menu" : "Menu");
+      if (!open && returnFocus) menuButton.focus();
+    };
+    menuButton?.addEventListener("click", () => setMenu(!menu!.classList.contains("is-open")));
+    menu?.querySelectorAll(".menu-panel a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && menu?.classList.contains("is-open")) setMenu(false, true);
+    });
+    document.addEventListener("click", (e) => {
+      if (menu?.classList.contains("is-open") && !menu.contains(e.target as Node)) setMenu(false);
+    });
+    menu?.addEventListener("focusout", (e) => {
+      if (!menu.contains(e.relatedTarget as Node | null)) setMenu(false);
+    });
+
+    // "compound." weight sweep on touch screens, where there's no hover:
+    // thicken letter by letter shortly after load, hold, then ease back.
+    // Tapping the word plays it again.
+    const accentWord = document.querySelector<HTMLElement>(".hero-headline em");
+    if (accentWord && matchMedia("(hover: none)").matches) {
+      const SWEEP_MS = 700 + 8 * 30; // per-letter duration + the last letter's delay
+      let timer: number | undefined;
+      const playSweep = () => {
+        window.clearTimeout(timer);
+        accentWord.classList.add("is-thick");
+        timer = window.setTimeout(() => accentWord.classList.remove("is-thick"), SWEEP_MS + 600);
+      };
+      document.fonts.ready.then(() => window.setTimeout(playSweep, 400));
+      accentWord.addEventListener("click", playSweep);
+    }
+
     const contactForm = document.querySelector<HTMLFormElement>("#contact-form");
     contactForm?.addEventListener("submit", (event) => {
       event.preventDefault();

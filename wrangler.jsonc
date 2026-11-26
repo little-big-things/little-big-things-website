@@ -1,6 +1,11 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "little-big-things-website",
-	"compatibility_date": "2026-02-24",
-	"compatibility_flags": ["nodejs_compat"],
+	"compatibility_date": "2026-11-01",
+	// Static site: Cloudflare serves dist/ directly, with no Worker code.
+	// public/_headers and public/_redirects are applied to every response.
+	"assets": {
+		"directory": "./dist",
+		"not_found_handling": "404-page"
+	}
 }

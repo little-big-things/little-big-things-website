@@ -1,24 +1,15 @@
-import cloudflare from "@astrojs/cloudflare";
-import { defineConfig, fontProviders } from "astro/config";
+import { defineConfig } from "astro/config";
 
 export default defineConfig({
-	output: "server",
-	adapter: cloudflare(),
-	fonts: [
-		{
-			provider: fontProviders.google(),
-			name: "Inter",
-			cssVariable: "--font-sans",
-			weights: [400, 500, 600, 700],
-			fallbacks: ["sans-serif"],
-		},
-		{
-			provider: fontProviders.google(),
-			name: "JetBrains Mono",
-			cssVariable: "--font-mono",
-			weights: [400, 500],
-			fallbacks: ["monospace"],
-		},
-	],
+	site: "https://littlebigthings.co",
+	output: "static",
+	build: {
+		// Keep scripts and styles as files, never inlined, so the
+		// Content-Security-Policy in public/_headers can stay at 'self'.
+		inlineStylesheets: "never",
+	},
+	vite: {
+		build: { assetsInlineLimit: 0 },
+	},
 	devToolbar: { enabled: false },
 });

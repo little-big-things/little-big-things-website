@@ -2,7 +2,11 @@
 import MarketingLayout from "../layouts/MarketingLayout.astro";
 ---
 
-<MarketingLayout title="Page not found — Little Big Things">
+<MarketingLayout
+	title="Page not found — Little Big Things"
+	description="This page doesn’t exist. Little Big Things is a data and engineering consultancy led by Tim & Christina Frazer."
+	noindex
+>
   <nav class="nav">
     <div class="container nav-inner">
       <a class="nav-mark" href="/" aria-label="Little Big Things — home">
@@ -13,11 +17,12 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
           <rect x="0" y="124" width="160" height="6"/>
           <path class="notch" d="M78 118 L84 105 L78 105 L84 95 L78 108 L82 108 L74 118 Z"/>
         </svg>
-        <span class="wm">Little Big Things<small>Tim &amp; Christina Frazer</small></span>
+        <span class="wm">Little Big Things</span>
       </a>
     </div>
   </nav>
 
+  <main id="main">
   <section class="hero" style="min-height: 60vh; display: flex; align-items: center; justify-content: center; text-align: center;">
     <div class="container">
       <h1 class="hero-headline" style="font-size: clamp(48px, 8vw, 120px);">404</h1>
@@ -25,4 +30,5 @@ import MarketingLayout from "../layouts/MarketingLayout.astro";
       <a class="btn btn-ghost btn-lg" href="/" style="margin-top: 32px;">Go home &rarr;</a>
     </div>
   </section>
+  </main>
 </MarketingLayout>
