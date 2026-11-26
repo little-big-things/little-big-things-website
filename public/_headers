@@ -24,6 +24,8 @@
   Cache-Control: public, max-age=86400
 /og-image.png
   Cache-Control: public, max-age=86400
+/og-image-2.png
+  Cache-Control: public, max-age=86400
 
 # HTML: always revalidate
 /

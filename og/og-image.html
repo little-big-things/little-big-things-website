@@ -1,0 +1,80 @@
+<!doctype html>
+<!--
+  Source for public/og-image-2.png, the 1200×630 share card.
+  Built from the site's own fonts, colours and hero layout so a shared link
+  looks like the page it opens. Regenerate after changing the name, the
+  headline or the hero's type (see og/README.md).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Little Big Things share card</title>
+<style>
+  @font-face { font-family: "Söhne"; src: url("../public/fonts/soehne-kraftig.woff2") format("woff2"); font-weight: 500; }
+  @font-face { font-family: "Söhne"; src: url("../public/fonts/soehne-halbfett.woff2") format("woff2"); font-weight: 700; }
+  /* Subset to the glyphs of "compound." only, like on the site. */
+  @font-face { font-family: "Overused Grotesk"; src: url("../public/fonts/overused-grotesk-compound-var.woff2") format("woff2"); font-weight: 200 900; }
+
+  :root { --mountain: #190ADB; --paper: #FFFAF8; --ink: #1C1C1E; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    width: 1200px; height: 630px; overflow: hidden; position: relative;
+    background: var(--paper); color: var(--ink);
+    font-synthesis: none;
+  }
+  /* The hero's diagonal stripe motif, at the hero's strength. */
+  .stripes {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(45deg,
+      transparent 0 12%, var(--ink) 12% 14%, transparent 14% 22%,
+      var(--ink) 22% 24%, transparent 24% 100%);
+    opacity: .049;
+  }
+  /* Lockup as in the nav, scaled up to read at phone-feed size (~11px on
+     screen at 340px wide needs ~40px here). 60px safe margin. */
+  .lockup {
+    position: absolute; left: 60px; top: 60px;
+    display: flex; align-items: baseline; gap: 18px;
+    font-family: "Söhne"; font-weight: 500; font-size: 40px; letter-spacing: -.005em; line-height: 1;
+  }
+  .lockup svg { width: 84px; height: auto; position: relative; top: 5px; }
+  .lockup path, .lockup rect { fill: var(--mountain); }
+  .lockup .notch { fill: var(--paper); }
+
+  /* The hero headline with the site's own settings: Söhne 700, tracking
+     -.025em, leading .78, "compound." in Overused Grotesk indented 1.042em.
+     The block is centred so the centre-square crop keeps its middle. */
+  h1 {
+    position: absolute; left: 0; right: 0; top: 226px;
+    width: max-content; margin: 0 auto;
+    font-family: "Söhne"; font-weight: 700; font-size: 150px;
+    line-height: .78; letter-spacing: -.025em;
+  }
+  h1 span { display: block; }
+  .kern-tt { display: inline !important; letter-spacing: -.05em; }
+  .ln2 { padding-left: 1.042em; }
+  em {
+    font-family: "Overused Grotesk"; font-weight: 700; font-style: normal;
+    letter-spacing: 0; color: var(--mountain);
+  }
+</style>
+</head>
+<body>
+  <div class="stripes"></div>
+  <div class="lockup">
+    <svg viewBox="0 0 160 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M10 120 L35 95 L60 120 Z"/>
+      <path d="M40 120 L75 85 L110 120 Z"/>
+      <path d="M80 120 L120 80 L160 120 Z"/>
+      <rect x="0" y="124" width="160" height="6"/>
+      <path class="notch" d="M78 118 L84 105 L78 105 L84 95 L78 108 L82 108 L74 118 Z"/>
+    </svg>
+    <span>Little Big Things</span>
+  </div>
+  <h1>
+    <span>the li<span class="kern-tt">t</span>tle things</span>
+    <span class="ln2"><em>compound.</em></span>
+  </h1>
+</body>
+</html>

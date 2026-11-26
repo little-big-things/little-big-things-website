@@ -10,12 +10,13 @@ const year = new Date().getFullYear();
 	title="Little Big Things — Tim & Christina Frazer"
 	description="Data, AI, and software engineering consulting for founders and technical leaders. Tim & Christina Frazer work end-to-end—from data architecture to production code."
 	canonical="https://littlebigthings.co/"
+	preloadAccent
 >
 
   <a class="skip-link" href="#main">Skip to content</a>
 
   <!-- ===== NAV ===== -->
-  <nav class="nav">
+  <header class="nav">
     <div class="container nav-inner">
       <a class="nav-mark" href="/" aria-label="Little Big Things — home">
         <svg class="lbt-mark" viewBox="0 0 160 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -27,11 +28,13 @@ const year = new Date().getFullYear();
         </svg>
         <span class="wm">Little Big Things</span>
       </a>
-      <div class="nav-links">
-        <a href="#work">Work</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
-      </div>
+      <nav class="nav-links" aria-label="Main">
+        <ul>
+          <li><a href="#work">Work</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
 
       <!-- Phones: the links move into a side menu that grows out of the button
            (after olivierlarose.com's "Awwwards side menu"). -->
@@ -56,7 +59,7 @@ const year = new Date().getFullYear();
         </nav>
       </div>
     </div>
-  </nav>
+  </header>
 
   <main id="main">
 
@@ -115,6 +118,7 @@ const year = new Date().getFullYear();
             src={photo}
             formats={["avif", "webp"]}
             widths={[400, 720, 1080, 1440]}
+            width={1440}
             sizes="(max-width: 720px) calc(100vw - 48px), (max-width: 880px) calc(100vw - 112px), (max-width: 1400px) calc((100vw - 176px) / 2.2), 556px"
             alt="Tim & Christina Frazer"
             loading="lazy"
@@ -211,12 +215,27 @@ const year = new Date().getFullYear();
     const menuButton = menu?.querySelector<HTMLButtonElement>(".menu-button");
     const setMenu = (open: boolean, returnFocus = false) => {
       if (!menu || !menuButton) return;
+      // Reopening soon after a close: the links' tilt only resets 1.1s after
+      // closing, so snap it back first (no transition, one style flush) and
+      // they still tip up into place.
+      if (open && !menu.classList.contains("is-open")) {
+        menu.classList.add("is-snapping");
+        void menu.offsetWidth;
+        menu.classList.remove("is-snapping");
+      }
       menu.classList.toggle("is-open", open);
       menuButton.setAttribute("aria-expanded", String(open));
       menuButton.setAttribute("aria-label", open ? "Close menu" : "Menu");
       if (!open && returnFocus) menuButton.focus();
     };
-    menuButton?.addEventListener("click", () => setMenu(!menu!.classList.contains("is-open")));
+    menuButton?.addEventListener("click", (e) => {
+      const opening = !menu!.classList.contains("is-open");
+      // Opened from the keyboard (Enter or Space report detail 0): the links
+      // are what a keyboard user tabs to next, so they appear at once instead
+      // of tipping in over 1.2s while already focusable.
+      if (opening) menu!.classList.toggle("is-instant", e.detail === 0);
+      setMenu(opening);
+    });
     menu?.querySelectorAll(".menu-panel a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && menu?.classList.contains("is-open")) setMenu(false, true);
@@ -225,6 +244,9 @@ const year = new Date().getFullYear();
       if (menu?.classList.contains("is-open") && !menu.contains(e.target as Node)) setMenu(false);
     });
     menu?.addEventListener("focusout", (e) => {
+      // No destination and no document focus means the window itself lost
+      // focus (another app, a notification), not that focus left the menu.
+      if (e.relatedTarget === null && !document.hasFocus()) return;
       if (!menu.contains(e.relatedTarget as Node | null)) setMenu(false);
     });
 

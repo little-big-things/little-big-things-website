@@ -109,18 +109,19 @@
   --font-mono:    ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
   /* =========================================================================
-     TYPE SCALE — from Typography.pdf
+     TYPE SCALE — from Typography.pdf, in rem (1rem = 16px at the browser
+     default) so text follows the visitor's default text size. Spacing stays px.
      Each step: size / line-height / tracking
      Naming convention: display > h1 > h2 > h3 > subhead > body > caption > small
      ========================================================================= */
-  --fs-display:   49px;  --lh-display: 1.1;  --tr-display: -0.015em;
-  --fs-h1:        39px;  --lh-h1:      1.2;  --tr-h1:      -0.010em;
-  --fs-h2:        32px;  --lh-h2:      1.25; --tr-h2:      -0.0075em;
-  --fs-h3:        25px;  --lh-h3:      1.3;  --tr-h3:      -0.005em;
-  --fs-subhead:   20px;  --lh-subhead: 1.4;  --tr-subhead: -0.002em;
-  --fs-body:      16px;  --lh-body:    1.4;  --tr-body:     0em;
-  --fs-caption:   13px;  --lh-caption: 1.4;  --tr-caption:  0.005em;
-  --fs-small:     10px;  --lh-small:   1.4;  --tr-small:    0.010em;
+  --fs-display:   3.0625rem;  --lh-display: 1.1;  --tr-display: -0.015em;
+  --fs-h1:        2.4375rem;  --lh-h1:      1.2;  --tr-h1:      -0.010em;
+  --fs-h2:        2rem;  --lh-h2:      1.25; --tr-h2:      -0.0075em;
+  --fs-h3:        1.5625rem;  --lh-h3:      1.3;  --tr-h3:      -0.005em;
+  --fs-subhead:   1.25rem;  --lh-subhead: 1.4;  --tr-subhead: -0.002em;
+  --fs-body:      1rem;  --lh-body:    1.4;  --tr-body:     0em;
+  --fs-caption:   0.8125rem;  --lh-caption: 1.4;  --tr-caption:  0.005em;
+  --fs-small:     0.625rem;  --lh-small:   1.4;  --tr-small:    0.010em;
 
   /* =========================================================================
      SPACING — 4 px base step. Use these instead of arbitrary px.
@@ -201,6 +202,7 @@ p {
   font-size: var(--fs-body);
   line-height: var(--lh-body);
   color: var(--fg);
+  text-wrap: pretty; /* no paragraph ends on one stranded word */
 }
 /* ---------------------------------------------------------------------------
    BASELINE RESET (optional — include before component CSS)

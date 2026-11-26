@@ -55,7 +55,7 @@
       position: absolute; left: 16px; top: 12px; z-index: 30;
       padding: 10px 16px; border-radius: var(--radius-md);
       background: var(--page-accent); color: var(--page-accent-fg);
-      font-family: var(--font-ui); font-weight: 500; font-size: 14px;
+      font-family: var(--font-ui); font-weight: 500; font-size: 0.875rem;
       transform: translateY(-200%);
     }
     .skip-link:focus-visible { transform: none; }
@@ -105,11 +105,21 @@
        mark stops 10/140 short of it (2px at 32px wide), so the mark moves down 2px. */
     .nav-mark { display: flex; align-items: baseline; gap: 12px; font-family: var(--font-ui); font-weight: 500; }
     .nav-mark svg { width: 32px; height: auto; position: relative; top: 2px; }
-    .nav-mark .wm { font-size: 14px; letter-spacing: -.005em; line-height: 1; }
-    .nav-links { display: flex; gap: 32px; align-items: center; font-family: var(--font-ui); font-size: 14px; }
-    .nav-links a:not(.btn) { color: var(--page-fg); opacity: .8; transition: opacity var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out); }
-    /* Hover turns the link Mountain; opacity alone (.8 → 1) was too faint to notice. */
-    @media (hover: hover) { .nav-links a:not(.btn):hover { opacity: 1; color: var(--page-accent); } }
+    .nav-mark .wm { font-size: 0.875rem; letter-spacing: -.005em; line-height: 1; }
+    /* Links (they go to places on the page) styled as buttons: padding gives a
+       36px-tall hit area, and the 8px gap + 2×12px padding keeps the text 32px
+       apart as before. The negative margin keeps "Contact" on the container edge. */
+    .nav-links { font-family: var(--font-ui); font-size: 0.875rem; }
+    .nav-links ul { display: flex; gap: 8px; align-items: center; margin: 0 -12px 0 0; padding: 0; list-style: none; }
+    .nav-links a:not(.btn) {
+      display: block; padding: 8px 12px; border-radius: var(--radius-md);
+      color: var(--page-fg); opacity: .8;
+      transition: opacity var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
+    }
+    /* Hover: Mountain text on a light Ink tint, like the ghost button's hover. */
+    @media (hover: hover) {
+      .nav-links a:not(.btn):hover { opacity: 1; color: var(--page-accent); background: color-mix(in srgb, var(--page-fg) 6%, transparent); }
+    }
 
     /* ---------- Side menu (phones, ≤720px) ----------
        After olivierlarose.com's "Awwwards side menu": a round button that grows
@@ -151,6 +161,13 @@
       /* The tipped-back links (rotateX 90deg under a 120px perspective) project
          far outside the panel; without this they widened the page on phones. */
       overflow: clip;
+      /* Short windows (a phone on its side, a zoomed laptop): the panel sits in
+         the sticky nav, so the page can't scroll it. It scrolls itself instead,
+         staying 18px clear of the window's bottom as it is of the top. Setting
+         overflow-y makes overflow-x compute to hidden, which still clips. */
+      max-height: calc(100dvh - 36px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
       /* Closed: clipped down to exactly the round button. */
       clip-path: inset(0 0 calc(100% - 40px) calc(100% - 40px) round 20px);
       visibility: hidden;
@@ -170,7 +187,7 @@
     .menu-links a {
       display: inline-block;
       font-family: var(--font-display); font-weight: 500;
-      font-size: 44px; line-height: 1.15; letter-spacing: -.015em;
+      font-size: 2.75rem; line-height: 1.15; letter-spacing: -.015em;
       color: var(--page-accent-fg);
     }
     /* Closing: fade out upright in 250ms, before the panel starts shrinking
@@ -184,6 +201,9 @@
         opacity 250ms ease-out,
         transform 0s linear 1100ms;
     }
+    /* Set for one style flush on open (see the menu script), so a reopen
+       inside that 1100ms starts from the tipped-back pose. */
+    .menu.is-snapping .menu-links li, .menu.is-snapping .menu-footer li { transition: none; }
     .menu.is-open .menu-links li {
       opacity: 1; transform: none;
       transition:
@@ -192,10 +212,19 @@
       transition-delay: calc(500ms + var(--i) * 100ms);
     }
 
+    /* Opened from the keyboard (see the menu script): the panel grows and the
+       links fade in together in 300ms, with no stagger, so focus never lands
+       on a link that hasn't appeared yet. */
+    .menu.is-instant.is-open .menu-panel { transition-duration: 300ms, 0s; }
+    .menu.is-instant.is-open .menu-links li,
+    .menu.is-instant.is-open .menu-footer li {
+      transition-duration: 300ms; transition-delay: 0s;
+    }
+
     .menu-panel .menu-footer {
       display: flex; flex-direction: column; gap: 8px;
       margin-top: 48px;
-      font-family: var(--font-ui); font-size: 14px;
+      font-family: var(--font-ui); font-size: 0.875rem;
     }
     .menu-footer a { color: var(--page-accent-fg); }
     .menu-footer li {
@@ -236,12 +265,12 @@
       border-radius: var(--radius-md);
       border: 1px solid transparent;
       transition: box-shadow var(--dur-base) var(--ease-out), transform var(--dur-quick) var(--ease-out), background var(--dur-base) var(--ease-out);
-      font-size: 14px; letter-spacing: -.005em;
+      font-size: 0.875rem; letter-spacing: -.005em;
     }
     .btn-primary { background: var(--page-accent); color: var(--page-accent-fg); }
     .btn-primary:active { transform: translateY(1px); }
     .btn-ghost { background: var(--page-card-bg); color: var(--page-fg); border-color: var(--page-rule-strong); }
-    .btn-lg { padding: 14px 22px; font-size: 16px; }
+    .btn-lg { padding: 14px 22px; font-size: 1rem; }
     .btn .arrow { display: inline-block; transition: transform var(--dur-base) var(--ease-out); }
     /* Hover styles only where a pointer can hover, so a tap on a phone
        doesn't leave the button looking hovered. */
@@ -261,7 +290,7 @@
 
     .eyebrow {
       display: inline-flex; align-items: center; gap: 12px;
-      font-family: var(--font-ui); font-size: 11px;
+      font-family: var(--font-ui); font-size: 0.6875rem;
       letter-spacing: .18em; text-transform: uppercase;
       color: var(--page-muted);
     }
@@ -293,7 +322,7 @@
       /* The floor shrinks below ~500px so both lines stay on one line each
          (the wider, "compound." with its indent, is ~6.6em) instead of
          wrapping or overflowing. */
-      font-size: clamp(min(56px, calc((100vw - 48px) / 6.7)), 11.5vw, 168px);
+      font-size: clamp(min(3.5rem, calc((100vw - 48px) / 6.7)), 11.5vw, 10.5rem);
       line-height: .78;
       letter-spacing: -.025em;
       margin: 28px 0 0;
@@ -301,14 +330,16 @@
       text-wrap: balance;
     }
     .hero-headline .ln1 { display: block; }
-    /* Indent in em so the stem of the "d" in "compound." sits 0.05em right of
-       the "g" descender in "things" at every width. Measured: the g's ink ends
-       5.773em into line 1 (Söhne 700); the d's stem starts 4.482em into
-       "compound." (Overused Grotesk 700, no added tracking).
+    /* Indent in em so the "d" in "compound." tucks in beside the "g" in
+       "things", with 0.045em of clearance between the two letter shapes at
+       every width. Measured in 2D: the top of the d only reaches the bottom of
+       the g's descender, where the curve has swung back left, so the shapes
+       (not their widest points) set the spacing.
        Tracking and indent move together: 7 letters precede the "d", so each
        +0.01em of tracking takes 0.07em off the indent. Anything that moves
-       the "g" (like .kern-tt) changes the indent by the same amount. */
-    .hero-headline .ln2 { display: block; padding-left: 1.341em; }
+       the "g" (like .kern-tt) changes the indent by the same amount, and so
+       does the line-height (it changes how far the d reaches into the g). */
+    .hero-headline .ln2 { display: block; padding-left: 1.042em; }
     /* Closes up the "tt" in "little" by 0.025em. It also pulls the "g" left
        by 0.025em, which the .ln2 indent above already accounts for. */
     .hero-headline .kern-tt { letter-spacing: -.05em; }
@@ -343,7 +374,7 @@
       max-width: 640px;
       margin: 48px 0 0;
       font-family: var(--font-text);
-      font-size: clamp(18px, 1.7vw, 22px);
+      font-size: clamp(1.0625rem, 1.7vw, 1.375rem); /* 17px floor: 320px phones get closer to 40 characters a line */
       line-height: 1.45;
       color: var(--page-muted);
     }
@@ -356,7 +387,7 @@
 
     .section-title {
       font-family: var(--font-display); font-weight: 700;
-      font-size: clamp(36px, 5vw, 64px);
+      font-size: clamp(2.25rem, 5vw, 4rem);
       line-height: 1.0; letter-spacing: -.018em;
       margin: 12px 0 0;
       text-wrap: balance;
@@ -374,7 +405,7 @@
     @media (max-width: 880px) { .about-grid { grid-template-columns: 1fr; } }
     .about-intro .section-title { margin: 14px 0 24px; }
     .about-intro p {
-      font-family: var(--font-text); font-size: 17px; line-height: 1.6;
+      font-family: var(--font-text); font-size: 1.0625rem; line-height: 1.6;
       color: var(--page-muted); margin: 0 0 18px;
       max-inline-size: 32em; /* ≈68 characters a line in Lora (its "0" is wide, so ch overshoots) */
     }
@@ -417,12 +448,12 @@
     }
     @media (max-width: 880px) { .work-grid { grid-template-columns: 1fr; gap: 24px; } }
     .work-body p {
-      font-family: var(--font-text); font-size: 17px; line-height: 1.6;
+      font-family: var(--font-text); font-size: 1.0625rem; line-height: 1.6;
       color: var(--page-muted); margin: 0 0 18px;
       max-inline-size: 32em; /* ≈68 characters a line in Lora (its "0" is wide, so ch overshoots) */
     }
     /* Phones: 16px body gets lines closer to 40 characters (17px gave 33–39). */
-    @media (max-width: 720px) { .work-body p, .about-intro p { font-size: 16px; } }
+    @media (max-width: 720px) { .work-body p, .about-intro p { font-size: 1rem; } }
     .work-body p:last-child { margin-bottom: 0; }
 
     /* ========================================================================
@@ -438,17 +469,17 @@
     @media (max-width: 880px) { .contact-grid { grid-template-columns: 1fr; gap: 48px; } }
     .contact h2 {
       font-family: var(--font-display); font-weight: 700;
-      font-size: clamp(40px, 6vw, 88px);
+      font-size: clamp(2.5rem, 6vw, 5.5rem);
       line-height: .98; letter-spacing: -.022em;
       margin: 0;
+      text-wrap: balance; /* "on." no longer sits alone on the last line */
     }
     .contact h2 em { font-style: normal; color: var(--page-accent); }
     .contact-form {
-      border-top: 1px solid var(--page-rule);
       padding-top: 28px;
       display: flex; flex-direction: column; gap: 18px;
     }
-    .contact-form label { font-family: var(--font-ui); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--page-muted); }
+    .contact-form label { font-family: var(--font-ui); font-size: 0.6875rem; letter-spacing: .18em; text-transform: uppercase; color: var(--page-muted); }
     .contact-form .field-group { display: flex; flex-direction: column; gap: 6px; }
     /* Fields draw their own focus: a 2px Mountain underline instead of a ring. */
     .contact-form .field:focus-within { border-bottom-color: var(--focus-ring); box-shadow: 0 1px 0 var(--focus-ring); }
@@ -461,7 +492,7 @@
     .contact-form .field input,
     .contact-form .field textarea {
       flex: 1; border: 0; outline: 0; background: transparent;
-      font-family: var(--font-text); font-size: 18px; color: var(--page-fg);
+      font-family: var(--font-text); font-size: 1.125rem; color: var(--page-fg);
       padding: 6px 0;
       resize: none;
     }
@@ -470,7 +501,7 @@
     .contact-form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
     @media (max-width: 720px) { .contact-form .row { grid-template-columns: 1fr; gap: 18px; } }
     .contact-form .submit-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-top: 8px; flex-wrap: wrap; }
-    .contact-form .submit-row small { font-family: var(--font-ui); font-size: 12px; color: var(--page-muted); letter-spacing: .02em; }
+    .contact-form .submit-row small { font-family: var(--font-ui); font-size: 0.75rem; color: var(--page-muted); letter-spacing: .02em; }
     /* Empty until the form is submitted; the script writes the status here. */
     .contact-form .form-status:empty { display: none; }
     .contact-aside {
@@ -479,8 +510,8 @@
       display: flex; flex-direction: column; gap: 24px;
     }
     @media (max-width: 880px) { .contact-aside { border-left: 0; border-top: 1px solid var(--page-rule); padding: 28px 0 0; } }
-    .contact-aside .item .k { font-family: var(--font-ui); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--page-muted); margin-bottom: 6px; }
-    .contact-aside .item .v { font-family: var(--font-display); font-size: 17px; font-weight: 500; letter-spacing: -.004em; }
+    .contact-aside .item .k { font-family: var(--font-ui); font-size: 0.6875rem; letter-spacing: .18em; text-transform: uppercase; color: var(--page-muted); margin-bottom: 6px; }
+    .contact-aside .item .v { font-family: var(--font-display); font-size: 1.0625rem; font-weight: 500; letter-spacing: -.004em; }
     .contact-aside .item .v a { border-bottom: 1px solid var(--page-rule-strong); padding-bottom: 2px; }
     @media (hover: hover) { .contact-aside .item .v a:hover { border-color: var(--page-accent); } }
 
@@ -491,12 +522,14 @@
       border-top: 1px solid var(--page-rule);
       padding: 40px 0 32px;
       font-family: var(--font-ui);
-      font-size: 12px;
+      font-size: 0.75rem;
       color: var(--page-muted);
     }
+    /* Baseline: the copyright sits on the same line as the wordmark, which
+       itself sits on the bottom of the mark. */
     .foot-grid {
       display: flex; justify-content: space-between;
-      gap: 40px; align-items: center;
+      gap: 40px; align-items: baseline;
     }
     @media (max-width: 720px) { .foot-grid { flex-direction: column; align-items: flex-start; gap: 20px; } }
     .foot-grid .right { text-align: right; letter-spacing: .02em; }
