@@ -7,13 +7,20 @@ interface Props {
 	description?: string;
 	canonical?: string;
 	image?: string;
+	imageAlt?: string;
+	noindex?: boolean;
+	/** Preload the "compound." font: only the homepage hero uses it. */
+	preloadAccent?: boolean;
 }
 
 const {
 	title,
 	description,
 	canonical = "https://littlebigthings.co/",
-	image = "https://littlebigthings.co/og-image.png",
+	image = "https://littlebigthings.co/og-image-2.png",
+	imageAlt = "Little Big Things: “the little things compound.”",
+	noindex = false,
+	preloadAccent = false,
 } = Astro.props;
 ---
 
@@ -24,24 +31,28 @@ const {
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="theme-color" content="#190ADB" />
 		<title>{title}</title>
-		<meta name="description" content={description} />
-		<link rel="canonical" href={canonical} />
+		{description && <meta name="description" content={description} />}
+		{noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="alternate icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet" />
+		<link rel="preload" href="/fonts/soehne-halbfett.woff2" as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href="/fonts/lora-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+		{preloadAccent && <link rel="preload" href="/fonts/overused-grotesk-compound-var.woff2" as="font" type="font/woff2" crossorigin />}
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content={title} />
-		<meta property="og:description" content={description} />
+		{description && <meta property="og:description" content={description} />}
 		<meta property="og:image" content={image} />
-		<meta property="og:url" content={canonical} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content={imageAlt} />
+		{!noindex && <meta property="og:url" content={canonical} />}
 		<meta property="og:site_name" content="Little Big Things" />
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title} />
-		<meta name="twitter:description" content={description} />
+		{description && <meta name="twitter:description" content={description} />}
 		<meta name="twitter:image" content={image} />
+		<meta name="twitter:image:alt" content={imageAlt} />
 	</head>
 	<body class="lbh-baseline">
 		<slot />

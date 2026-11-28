@@ -1,5 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 140">
-  <rect width="160" height="140" fill="#FFFAF8"></rect>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 25 160 160">
+  <!-- Square frame centred on the mark (art spans y 80–130), so it sits in
+       the middle of a browser tab instead of along the bottom. -->
+  <rect y="25" width="160" height="160" fill="#FFFAF8"></rect>
   <g fill="#190ADB">
     <path d="M10 120 L35 95 L60 120 Z"></path>
     <path d="M40 120 L75 85 L110 120 Z"></path>
